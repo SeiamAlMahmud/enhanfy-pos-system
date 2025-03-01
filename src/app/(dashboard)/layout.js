@@ -27,8 +27,8 @@ export default function RootLayout({ children }) {
   }
 
   return (
-    <html lang="en">
-      <body className="font">
+    <>
+      <div className="font">
         <div className="h-screen flex">
           {/* LEFT Sidebar */}
           <div className="hidden lg:block md:w-[8%] lg:w-[16%] xl:w-[14%] p-0 bg-[#F7F8FA] dark:bg-[#141432]">
@@ -45,7 +45,7 @@ export default function RootLayout({ children }) {
           </div>
           <ToastContainer />
         </div>
-      </body>
-    </html>
+      </div>
+    </>
   );
 }

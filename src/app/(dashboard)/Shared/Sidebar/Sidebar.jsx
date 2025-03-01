@@ -62,6 +62,36 @@ import { Package } from 'lucide-react';
 import { Ribbon } from 'lucide-react';
 
 
+
+const homePrimary = [
+  {
+    href: "/home",
+    label: "Dashboard",
+    icon: <LayoutDashboard size={20} strokeWidth={1} />,
+    pathname: "/home"
+  },
+  {
+    href: "/Owners",
+    label: "Owners",
+    icon: <UserRound size={20} strokeWidth={1} />,
+    pathname: "/Owners"
+  },
+  {
+    href: "/Bank_Accounts",
+    label: "Bank Accounts",
+    icon: <Landmark size={20} strokeWidth={1} />,
+    pathname: "/Bank_Accounts"
+  },
+  // Uncomment and add if necessary:
+  // {
+  //   href: "/Cash_Book",
+  //   label: "Cash Book",
+  //   icon: <Banknote size={20} strokeWidth={1} />,
+  //   pathname: "/Cash_Book"
+  // }
+];
+
+
 export default function Sidebar() {
     const spanClass = " block h-0.5 bg-gradient-to-r from-pink-500 to-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-700"
 
@@ -120,71 +150,26 @@ export default function Sidebar() {
                 {/* font*/}
                <Link href="/home"> <Image src={logo} width={150} height={300} alt='Repwoop POS Software' className='bg-transparent w-[60%] xl:w-[90%]'/></Link>
                 <div className="text-start ">
-                    <ul className="pt-2 space-y-4 text-gray-600 dark:text-white ">
-                        <li>
-                        
-                        <Link href="/home"  className=
-                        {`${
-                          pathname === '/home' 
-                          ? ' group text-orange-500 flex items-center gap-3 hover:text-orange-500' 
-                          : 'group text-gray-500 dark:text-white hover:text-orange-500 flex items-center gap-3'
-                      }`}>
-                          <span><LayoutDashboard size={20}  strokeWidth={1} /></span> 
-                          <div>
-                          <p>Dashboard</p>
-                          <span className={spanClass}></span>
-                          </div>
-                        </Link>
-                        </li>
-                        <li>
-                        
-                        <Link href="/Owners"  className=
-                        {`${
-                          pathname === '/Owners' 
-                          ? ' group text-orange-500 flex items-center gap-3 hover:text-orange-500' 
-                          : 'group text-gray-500 dark:text-white hover:text-orange-500 flex items-center gap-3'
-                      }`}>
-                          <span><UserRound size={20} strokeWidth={1}/></span> 
-                          <div>
-                          <p>Owners</p>
-                          <span className={spanClass}></span>
-                          </div>
-                        </Link>
-                        </li>
-
-                        <li >
-                        <Link href="/Bank_Accounts" className=
-                        {`${
-                          pathname === '/Bank_Accounts' 
-                            ? ' group text-orange-500 flex items-center gap-3 hover:text-orange-500' 
-                            : 'group text-gray-500 dark:text-white hover:text-orange-500 flex items-center gap-3'
-                        }`}>
-                            <span><Landmark size={20} strokeWidth={1}/></span> 
-                            <div>
-                            <p>Bank Accounts</p>
-                            <span className={spanClass}></span>
-                            </div>
-                        </Link>
-                        </li>
-                        {/* <li>
-                        
-                        <Link href="/Cash_Book" className=
-                        {`${
-                          pathname === '/Cash_Book' 
-                          ? ' group text-orange-500 flex items-center gap-3 hover:text-orange-500' 
-                          : 'group text-gray-500 dark:text-white hover:text-orange-500 flex items-center gap-3'
-                      }`}>
-                          <span>
-                            <Banknote size={20} strokeWidth={1}/>
-                          </span> 
-                          <div>
-                          <p>Cash Book</p>
-                          <span className={spanClass}></span>
-                          </div>
-                        </Link>
-                        </li> */}
-                        
-                    </ul>
+                    <ul className="pt-2 space-y-4 text-gray-600 dark:text-white">
+  {homePrimary.map(({ href, label, icon, pathname: menuPath }) => (
+    <li key={href}>
+      <Link
+        href={href}
+        className={`${
+          pathname === menuPath
+            ? 'group text-orange-500 flex items-center gap-3 hover:text-orange-500'
+            : 'group text-gray-500 dark:text-white hover:text-orange-500 flex items-center gap-3'
+        }`}
+      >
+        <span>{icon}</span>
+        <div>
+          <p>{label}</p>
+          <span className={spanClass}></span>
+        </div>
+      </Link>
+    </li>
+  ))}
+</ul>
                 </div>
                 {/* Sales & Purchase */}
                 <div className="">
