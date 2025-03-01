@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Loader from '@/app/Loaders/page';
+import axios from 'axios';
 
 const UserContext = createContext();
 
@@ -11,12 +12,22 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); // Loading state
   const router = useRouter();
 
+  const api = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL, // Replace with your backend base URL
+    withCredentials: true, // Enables sending cookies with requests
+    headers: {
+      'Content-Type': 'application/json', // Default header
+    },
+  });
+
   useEffect(() => {
     const checkLoginStatus = () => {
       setLoading(true); // Start loading
       const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
       const expiration = localStorage.getItem('expiration');
-      const storedUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+      const storedUser = localStorage.getItem('user')
+        ? JSON.parse(localStorage.getItem('user'))
+        : null;
       const currentTime = new Date().getTime();
 
       if (loggedIn && expiration && currentTime < parseInt(expiration)) {
@@ -34,7 +45,11 @@ export const UserProvider = ({ children }) => {
     checkLoginStatus();
 
     const handleStorageChange = (event) => {
-      if (event.key === 'isLoggedIn' || event.key === 'expiration' || event.key === 'user') {
+      if (
+        event.key === 'isLoggedIn' ||
+        event.key === 'expiration' ||
+        event.key === 'user'
+      ) {
         checkLoginStatus();
       }
     };
@@ -74,13 +89,11 @@ export const UserProvider = ({ children }) => {
   };
 
   if (loading) {
-    return (
-      <Loader/>
-    );
+    return <Loader />;
   }
 
   return (
-    <UserContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <UserContext.Provider value={{ isLoggedIn, user, login, logout, api }}>
       {children}
     </UserContext.Provider>
   );

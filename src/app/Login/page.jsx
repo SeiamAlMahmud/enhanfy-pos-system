@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -6,14 +6,13 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Loader from '../Loaders/page';
 import { useUser } from '../(dashboard)/context/UserContext';
 
-
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { login } = useUser();
+  const { login, api } = useUser();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -30,41 +29,43 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await fetch('/Login/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      const { data } = await api.post(`/api/user/login`, formData);
 
-      if (response.ok) {
-        const userData = await response.json();
-        console.log('Login successful:', userData);
-        
+      if (data.success) {
+        console.log('Login successful:', data);
+
         // Pass full user data (including role) to the login function in UserProvider
-        login(userData); 
+        login(data);
         router.push('/home');
-         // Redirect to the home page
+        // Redirect to the home page
       } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message); // Display error message
+        setErrorMessage('An error occurred. Please try again later.'); // Display error message
       }
     } catch (error) {
       console.error('Login error:', error);
       setErrorMessage('An error occurred. Please try again later.');
-    }
-    finally {
+    } finally {
       setLoading(false); // Set loading to false when the request is done
     }
   };
 
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-cover" style={{ backgroundImage: "url('https://r4.wallpaperflare.com/wallpaper/184/515/626/digital-digital-art-artwork-illustration-drawing-hd-wallpaper-98166df8f0901cc8c09ce13e08c2c4ca.jpg')" }}>
+    <div
+      className="flex items-center justify-center min-h-screen bg-cover"
+      style={{
+        backgroundImage:
+          "url('https://r4.wallpaperflare.com/wallpaper/184/515/626/digital-digital-art-artwork-illustration-drawing-hd-wallpaper-98166df8f0901cc8c09ce13e08c2c4ca.jpg')",
+      }}
+    >
       <div className="p-6 max-w-md w-full py-[8%] px-[2%] bg-opacity-30  backdrop-blur-sm rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-black mb-6">Login</h2>
+        <h2 className="text-2xl font-bold text-center text-black mb-6">
+          Login
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-black text-sm font-semibold mb-2">Email</label>
+            <label className="block text-black text-sm font-semibold mb-2">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -76,7 +77,9 @@ export default function LoginForm() {
             />
           </div>
           <div className="relative items-center">
-            <label className="block text-black text-sm font-semibold mb-2">Password</label>
+            <label className="block text-black text-sm font-semibold mb-2">
+              Password
+            </label>
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
@@ -95,16 +98,16 @@ export default function LoginForm() {
             </button>
           </div>
           {loading ? (
-        <button type="button" disabled className="loading-button">
-          <Loader/>
-        </button>
-      ) : (
-          <button
-            type="submit"
-            className="w-full bg-indigo-500 text-black font-semibold py-2 rounded-lg shadow-md hover:bg-indigo-600 transition duration-200"
-          >
-            Login
-          </button>
+            <button type="button" disabled className="loading-button">
+              <Loader />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="w-full bg-indigo-500 text-black font-semibold py-2 rounded-lg shadow-md hover:bg-indigo-600 transition duration-200"
+            >
+              Login
+            </button>
           )}
         </form>
         {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
