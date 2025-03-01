@@ -34,6 +34,7 @@ export const UserProvider = ({ children }) => {
         setIsLoggedIn(true);
         setUser(storedUser); // Set user from localStorage
         startLogoutTimer();
+        router.push('/home');
       } else {
         logout();
         router.push('/');
