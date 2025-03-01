@@ -62,14 +62,14 @@ export default function Navigation() {
   return (
     <div className='w-[100%] lg:w-[86%] fixed top-0 z-50 font-nunito text-sm'>
 
-        <div className="navbar bg-white dark:bg-[#141432] backdrop-blur-sm items-center ">
+        <div className="navbar bg-white dark:bg-[#141432] backdrop-blur-sm items-start  flex justify-between py-6">
             <div className="navbar-start flex items-center">
             <span className='min-[769px]:hidden '><Sidebar /></span>
-                <a className=" text-gray-500 dark:text-white  md:text-md">Repwoop POS Software</a>
+                <a className=" text-gray-500 dark:text-white  md:text-md ml-5">Repwoop POS Software</a>
             </div>
             {/* nav center */}
             <div className="navbar-center hidden lg:flex">
-              <ul className="menu-horizontal gap-8 px-1">
+              <ul className="menu-horizontal gap-8 px-1 flex ">
                 <li >
                   <Link href="/POS" className=
                         {`${
@@ -123,7 +123,7 @@ export default function Navigation() {
               </ul>
             </div>
 
-            <div className='navbar-end'>
+            <div className='navbar-end flex mr-6'>
             <div className="w-full h-full flex flex-col justify-end items-end">
               <div className="flex justify-end items-end px-4">
                 {/* Sun Icon */}
@@ -170,7 +170,7 @@ export default function Navigation() {
             
      <div>
      {isLoggedIn ? (
-            <Link href="/"><button className='bg-rose-500 p-1 px-5 rounded-full text-white flex items-center gap-1' onClick={logout}>Logout <ArrowRightFromLine size={16} /></button></Link>
+            <Link href="/"><button className='bg-rose-500 p-1 px-5 rounded-full text-white flex items-center gap-1 cursor-pointer' onClick={logout}>Logout <ArrowRightFromLine size={16} /></button></Link>
           ) : (
             <Link href="/Login"> <button className='bg-cyan-500 p-1 px-5 rounded-full text-white flex items-center gap-1 '> <ArrowLeftFromLine size={16} />Login</button></Link>
           )}
@@ -200,7 +200,6 @@ export default function Navigation() {
           </div>
         </div>
                 
-
 
     </div>
   )

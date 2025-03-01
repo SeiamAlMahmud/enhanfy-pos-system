@@ -36,9 +36,11 @@ export default function RootLayout({ children }) {
           </div>
 
           {/* RIGHT Main Content */}
-          <div className="w-[100%] md:w-[95%] lg:w-[84%] xl:w-[92%] bg-[#F7F8FA] dark:bg-[#141432] overflow-scroll flex flex-col">
+          <div className="w-[100%] md:w-[95%] lg:w-[84%] xl:w-[92%] bg-[#F7F8FA] dark:bg-[#141432] overflow-scroll flex flex-col ">
             <Navigation />
+            <div className='mt-[85px]'>
             {children}
+            </div>
             <footer />
           </div>
           <ToastContainer />
