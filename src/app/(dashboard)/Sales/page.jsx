@@ -467,7 +467,7 @@ const handlePrint = async (sale) => {
   };
   
 
-
+console.log(sales);
   return (
     <div className='bg-white dark:bg-[#141432] text-gray-500 dark:text-white font-nunito text-sm'>
         <div className="p-2 md:mt-[5%] mt-[20%]">
@@ -476,7 +476,7 @@ const handlePrint = async (sale) => {
         <div className="bg-blue-600 text-white p-4 rounded shadow-sm">
             <h3 className=" ">Sold Today</h3>
             <p className=" dark:text-white ">
-              Tk {sales?.filter((sale) => 
+              Tk {sales && sales?.filter((sale) => 
                 new Date(sale.sale_date).toLocaleDateString() === new Date().toLocaleDateString()
               ).reduce((sum, sale) => sum + Number(sale.total_payable || 0), 0).toFixed(2)}
             </p>
@@ -485,24 +485,24 @@ const handlePrint = async (sale) => {
           <div className="bg-violet-500 text-white p-4 rounded shadow-sm">
             <h3 className=" ">Today Received</h3>
             <p className=" dark:text-white ">
-              Tk {sales?.filter((sale) => 
+              Tk {sales && sales?.filter((sale) => 
                 new Date(sale.sale_date).toLocaleDateString() === new Date().toLocaleDateString()
               ).reduce((sum, sale) => sum + Number(sale.amount_paid || 0), 0).toFixed(2)}
             </p>
           </div>
 
-          {/* <div className="bg-red-500 text-white p-4 rounded shadow-sm">
+          <div className="bg-red-500 text-white p-4 rounded shadow-sm">
             <h3 className=" ">Today Profit</h3>
             <p className=" dark:text-white ">
-              Tk {sales?.filter((sale) => 
+              Tk {sales && sales?.filter((sale) => 
                 new Date(sale.sale_date).toLocaleDateString() === new Date().toLocaleDateString()
               ).reduce((sum, sale) => {
                 const totalProfit = Number(sale.total || 0) - 
-                  (sale.products?.reduce((productSum, product) => productSum + Number(product.purchase_cost || 0), 0) || 0);
+                  (sales && sale.products.length !== 0 && JSON.parse(sale.products).reduce((productSum, product) => productSum + Number(product.purchase_cost || 0), 0) || 0);
                 return sum + totalProfit;
               }, 0).toFixed(2)}
             </p>
-          </div> */}
+          </div>
 
           <div className="bg-green-600 text-white p-4 rounded shadow-sm">
             <h3 className=" ">Total Sold</h3>
@@ -586,7 +586,7 @@ const handlePrint = async (sale) => {
             </tr>
           </thead>
           <tbody className='border'>
-            {/* {dataToDisplay?.map((sale) => (
+          {dataToDisplay?.map((sale) => (
               <tr key={sale.invoice_no}>
               <td className="p-2 border">{sale.invoice_no}</td>
               <td className="p-2 border">{sale.selected_customer}</td>
@@ -644,7 +644,7 @@ const handlePrint = async (sale) => {
 
                 <td className="p-2 border">
                   {/* Action buttons */}
-                  {/* <div className="relative">
+                  <div className="relative">
                   <div className="dropdown dropdown-end">
                     <div tabIndex={0} role="button" className=" m-1">
                     <button
@@ -664,11 +664,11 @@ const handlePrint = async (sale) => {
                       }}
                     >
                       Invoice
-                    </li> */} 
+                    </li> 
                       {/* <li className="p-2 cursor-pointer">
                           <Printer /> Challan Print
-                      </li> */}
-                      {/* <li onClick={() => handleEditClick(sale)} className="p-2 hover:bg-base-200 cursor-pointer">
+                      </li>  */}
+                       <li onClick={() => handleEditClick(sale)} className="p-2 hover:bg-base-200 cursor-pointer">
                           Edit
                       </li>
                       <li onClick={() => handleShowModal(sale)} className="p-2 hover:bg-base-200 cursor-pointer">
@@ -691,7 +691,7 @@ const handlePrint = async (sale) => {
                   </div>
                 </td>
               </tr>
-            ))} */}
+            ))} 
           </tbody>
         </table>
       </div>
