@@ -16,7 +16,8 @@ export default function Damages() {
   // Fetch damage data from the backend
   const fetchDamages = async () => {
     try {
-      const response = await fetch("/Damages/damage", {
+      // const response = await fetch("/Damages/damage", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/get-damages`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -56,7 +57,8 @@ export default function Damages() {
   // Delete damage record
   const handleDelete = async (id) => {
     try {
-      const response = await fetch("/Damages/damage", {
+      // const response = await fetch("/Damages/damage", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/delete-damages`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),

@@ -410,8 +410,8 @@ export default function Sales() {
 
   const updateSaleStatus = async (saleId, newStatus) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/put-sales`,
+        // const response = await fetch('/Sales/Create/sales',
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/put-sales`,
         {
           method: 'PUT',
           headers: {

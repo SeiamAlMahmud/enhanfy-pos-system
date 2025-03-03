@@ -31,7 +31,8 @@ export default function Payments() {
   useEffect(() => {
     const fetchSales = async () => {
       try {
-        const response = await fetch('/Sales/Create/sales');
+        // const response = await fetch('/Sales/Create/sales');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/get-sales`);
         const data = await response.json();
         setSales(Array.isArray(data) ? data : [data]); // Ensure data is an array
       } catch (error) {

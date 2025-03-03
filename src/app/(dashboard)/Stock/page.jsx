@@ -25,7 +25,8 @@ export default function Stock() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/Products/Create/products');
+        // const response = await fetch('/Products/Create/products');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`);
         if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
         setProducts(data);
@@ -52,7 +53,8 @@ export default function Stock() {
   useEffect(() => {
     const fetchSales = async () => {
       try {
-        const response = await fetch('/Sales/Create/sales');
+        // const response = await fetch('/Sales/Create/sales');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/get-sales`);
         if (!response.ok) throw new Error('Failed to fetch sales');
         const data = await response.json();
         setSales(data);
@@ -69,7 +71,8 @@ export default function Stock() {
   useEffect(() => {
     const fetchDamages = async () => {
       try {
-        const response = await fetch('/Damages/damage');
+        // const response = await fetch('/Damages/damage');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/get-damages`);
         if (!response.ok) throw new Error('Failed to fetch damages');
         const data = await response.json();
         setDamages(data.damages || []);

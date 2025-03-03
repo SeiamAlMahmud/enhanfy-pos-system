@@ -34,9 +34,17 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       try {
+        // const [productRes, salesRes, purchaseRes, expenseRes, customerRes, supplierRes] = await Promise.all([
+        //   fetch("/home/product"),
+        //   fetch("/Sales/Create/sales"),
+        //   fetch("/Purchase/Create/purchase"),
+        //   fetch("/Expenses/expense"),
+        //   fetch("/Customers/customer"),
+        //   fetch("/Suppliers/suppliers"),
+        // ]);
         const [productRes, salesRes, purchaseRes, expenseRes, customerRes, supplierRes] = await Promise.all([
           fetch("/home/product"),
-          fetch("/Sales/Create/sales"),
+          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/get-sales`),
           fetch("/Purchase/Create/purchase"),
           fetch("/Expenses/expense"),
           fetch("/Customers/customer"),

@@ -15,7 +15,8 @@ export default function AddDamage() {
     // Fetch products from the backend
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/Products/Create/products");
+        // const response = await fetch("/Products/Create/products");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`);
         if (!response.ok) throw new Error("Failed to fetch products");
         const data = await response.json();
         setAvailableProducts(data);
@@ -65,7 +66,8 @@ export default function AddDamage() {
 
     try {
       // Send damage data to the backend
-      const response = await fetch("/Damages/damage", {
+      // const response = await fetch("/Damages/damage", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/post-damages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(damageData),
