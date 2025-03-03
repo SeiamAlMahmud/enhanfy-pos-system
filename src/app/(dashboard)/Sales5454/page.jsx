@@ -1,109 +1,115 @@
-"use client"
-
+'use client';
 
 import Loader from '@/app/Loaders/page';
-import { ChevronDown, CornerDownLeft, Eye, List, Pencil, Plus, Printer, Trash2 } from 'lucide-react';
+import {
+  ChevronDown,
+  CornerDownLeft,
+  Eye,
+  List,
+  Pencil,
+  Plus,
+  Printer,
+  Trash2,
+} from 'lucide-react';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { GrUserSettings } from 'react-icons/gr';
 import { toast } from 'react-toastify';
-import QRCode from "qrcode";
+import QRCode from 'qrcode';
 export default function Sales() {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [selectedInvoice, setSelectedInvoice] = useState(null);
-    const [billNumber, setBillNumber] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [selectedCustomer, setSelectedCustomer] = useState('');
-    const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [isShowModalOpen, setIsShowModalOpen] = useState(false);
-    const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
-    const [isReturnListModalOpen, setIsReturnListModalOpen] = useState(false);
-    const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [selectedSale, setSelectedSale] = useState(null); // Data for the selected sale
-    const [editableData, setEditableData] = useState({});
-    const [paymentAmount, setPaymentAmount] = useState(""); // Amount being added to payment
-    const [error, setError] = useState(""); // Error handling for invalid inputs
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [billNumber, setBillNumber] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedCustomer, setSelectedCustomer] = useState('');
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isShowModalOpen, setIsShowModalOpen] = useState(false);
+  const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
+  const [isReturnListModalOpen, setIsReturnListModalOpen] = useState(false);
+  const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedSale, setSelectedSale] = useState(null); // Data for the selected sale
+  const [editableData, setEditableData] = useState({});
+  const [paymentAmount, setPaymentAmount] = useState(''); // Amount being added to payment
+  const [error, setError] = useState(''); // Error handling for invalid inputs
 
-    const [sales, setSales] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [activeModal, setActiveModal] = useState(""); // Tracks the active modal name
-    const [status, setStatus] = useState(""); // Tracks the current status
+  const [sales, setSales] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeModal, setActiveModal] = useState(''); // Tracks the active modal name
+  const [status, setStatus] = useState(''); // Tracks the current status
 
-  
+  const handleActionClick = (invoiceId) => {
+    setSelectedInvoice(invoiceId);
+    // You can implement specific logic for each action
+    console.log(`Action clicked for invoice: ${invoiceId}`);
+  };
 
-    const handleActionClick = (invoiceId) => {
-      setSelectedInvoice(invoiceId);
-      // You can implement specific logic for each action
-      console.log(`Action clicked for invoice: ${invoiceId}`);
+  const [filteredData, setFilteredData] = useState([]); // Initialize with full data
+  useEffect(() => {
+    const fetchSales = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/get-sales`
+        );
+        if (!response.ok) throw new Error('Failed to fetch sales');
+        const data = await response.json();
+        console.log(data);
+        setSales(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching sales:', error);
+        toast.error('Failed to load sales data.');
+        setLoading(false);
+      }
     };
 
+    fetchSales();
+  }, []);
 
-      const [filteredData, setFilteredData] = useState([]); // Initialize with full data
-      useEffect(() => {
-        const fetchSales = async () => {
-          try {
-            const response = await fetch('/Sales/Create/sales');
-            if (!response.ok) throw new Error('Failed to fetch sales');
-            const data = await response.json();
-            console.log(data);
-            setSales(data);
-            setLoading(false);
-          } catch (error) {
-            console.error('Error fetching sales:', error);
-            toast.error('Failed to load sales data.');
-            setLoading(false);
-          }
-        };
-    
-        fetchSales();
-      }, []);
-    
-      if (loading) return <Loader/>;
-  
-      
+  if (loading) return <Loader />;
 
-     // Extract unique customers from the sales data
-const uniqueCustomers = [...new Set(sales?.map((item) => item.selected_customer))];
+  // Extract unique customers from the sales data
+  const uniqueCustomers = [
+    ...new Set(sales?.map((item) => item.selected_customer)),
+  ];
 
+  // Filter Function
+  const handleFilter = () => {
+    let filtered = sales;
 
-// Filter Function
-const handleFilter = () => {
-  let filtered = sales;
+    // Filter by Invoice Number
+    if (billNumber) {
+      filtered = filtered.filter((item) =>
+        item.invoice_no.toString().includes(billNumber)
+      );
+    }
 
-  // Filter by Invoice Number
-  if (billNumber) {
-    filtered = filtered.filter((item) =>
-      item.invoice_no.toString().includes(billNumber)
-    );
-  }
+    // Filter by Start Date
+    if (startDate) {
+      filtered = filtered.filter(
+        (item) => new Date(item.sale_date) >= new Date(startDate)
+      );
+    }
 
-  // Filter by Start Date
-  if (startDate) {
-    filtered = filtered.filter(
-      (item) => new Date(item.sale_date) >= new Date(startDate)
-    );
-  }
+    // Filter by End Date
+    if (endDate) {
+      filtered = filtered.filter(
+        (item) => new Date(item.sale_date) <= new Date(endDate)
+      );
+    }
 
-  // Filter by End Date
-  if (endDate) {
-    filtered = filtered.filter(
-      (item) => new Date(item.sale_date) <= new Date(endDate)
-    );
-  }
+    // Filter by Selected Customer
+    if (selectedCustomer) {
+      filtered = filtered.filter(
+        (item) => item.selected_customer === selectedCustomer
+      );
+    }
 
-  // Filter by Selected Customer
-  if (selectedCustomer) {
-    filtered = filtered.filter(
-      (item) => item.selected_customer === selectedCustomer
-    );
-  }
-
-  setFilteredData(filtered);
-};
-const dataToDisplay = filteredData.length > 0 ? filteredData : sales;
+    setFilteredData(filtered);
+  };
+  const dataToDisplay = filteredData.length > 0 ? filteredData : sales;
 
   // Reset Function
   const handleReset = () => {
@@ -115,47 +121,46 @@ const dataToDisplay = filteredData.length > 0 ? filteredData : sales;
   };
 
   const totalPayable = sales
-  ?.map((sale) => Math.round(sale.total_payable || 0)) // Ensure no decimals
-  .reduce((sum, value) => sum + value, 0);
+    ?.map((sale) => Math.round(sale.total_payable || 0)) // Ensure no decimals
+    .reduce((sum, value) => sum + value, 0);
 
-// ---------invoice---------
+  // ---------invoice---------
 
+  const handlePrint = async (sale) => {
+    console.log('Sale object passed to handlePrint:', sale);
+    if (typeof window === 'undefined') return;
 
-const handlePrint = async (sale) => {
-  console.log("Sale object passed to handlePrint:", sale);
-  if (typeof window === "undefined") return;
+    const newWindow = window.open('', '_blank', 'width=800,height=600');
+    if (!newWindow) {
+      alert(
+        'Pop-up blocker is preventing the print window from opening. Please allow pop-ups for this site.'
+      );
+      return;
+    }
 
-  const newWindow = window.open("", "_blank", "width=800,height=600");
-  if (!newWindow) {
-    alert(
-      "Pop-up blocker is preventing the print window from opening. Please allow pop-ups for this site."
-    );
-    return;
-  }
+    // Prepare data for the QR Code
+    const saleDataForQR = {
+      invoice_no: sale?.invoice_no,
+      customer: sale?.selected_customer,
+      sale_date: new Date(sale?.sale_date).toLocaleDateString(),
+      total_payable: sale?.total_payable,
+      amount_paid: sale?.amount_paid,
+      change_return: sale?.change_return,
+    };
 
-  // Prepare data for the QR Code
-  const saleDataForQR = {
-    invoice_no: sale?.invoice_no,
-    customer: sale?.selected_customer,
-    sale_date: new Date(sale?.sale_date).toLocaleDateString(),
-    total_payable: sale?.total_payable,
-    amount_paid: sale?.amount_paid,
-    change_return: sale?.change_return,
-  };
+    // Convert the data to a JSON string
+    const qrCodeData = JSON.stringify(saleDataForQR);
 
-  // Convert the data to a JSON string
-  const qrCodeData = JSON.stringify(saleDataForQR);
+    // Generate QR Code
+    let qrCodeImageUrl = '';
+    try {
+      qrCodeImageUrl = await QRCode.toDataURL(qrCodeData);
+    } catch (err) {
+      console.error('Error generating QR code:', err);
+    }
 
-  // Generate QR Code
-  let qrCodeImageUrl = "";
-  try {
-    qrCodeImageUrl = await QRCode.toDataURL(qrCodeData);
-  } catch (err) {
-    console.error("Error generating QR code:", err);
-  }
-
-  newWindow.document.open();
-  newWindow.document.write(`
+    newWindow.document.open();
+    newWindow.document.write(`
     <html>
       <head>
         <title>Invoice - ${sale?.invoice_no}</title>
@@ -285,7 +290,7 @@ const handlePrint = async (sale) => {
             <div>
               <p><strong>Payment Method:</strong> ${sale?.payment_method}</p>
               <p><strong>Payment Account:</strong> ${sale?.payment_account}</p>
-              <p><strong>Status:</strong> ${sale?.status || "Not Yet"}</p>
+              <p><strong>Status:</strong> ${sale?.status || 'Not Yet'}</p>
             </div>
           </div>
           <table>
@@ -311,7 +316,7 @@ const handlePrint = async (sale) => {
                   </tr>
                 `
                 )
-                .join("")}
+                .join('')}
             </tbody>
           </table>
           <div class="summary">
@@ -338,12 +343,11 @@ const handlePrint = async (sale) => {
       </body>
     </html>
   `);
-  newWindow.document.close();
-  newWindow.focus();
-  newWindow.print();
-};
+    newWindow.document.close();
+    newWindow.focus();
+    newWindow.print();
+  };
 
-  
   // open the modal....
   const handleShowModal = (sale) => {
     setSelectedSale(sale);
@@ -370,15 +374,14 @@ const handlePrint = async (sale) => {
 
   const handleSaveChanges = () => {
     // Perform save/update logic here
-    console.log("Updated Data:", editableData);
+    console.log('Updated Data:', editableData);
     setIsEditModalOpen(false); // Close the modal after saving
   };
-  
 
   const handleAddPaymentClick = (sale) => {
     setIsAddPaymentModalOpen(true); // Open the modal
     setPaymentAmount(sale.amount_paid); // Reset payment amount
-    setError(""); // Reset error message
+    setError(''); // Reset error message
   };
 
   const handleInputChanges = (e) => {
@@ -389,7 +392,7 @@ const handlePrint = async (sale) => {
     const newPayment = parseFloat(paymentAmount);
 
     if (isNaN(newPayment) || newPayment <= 0) {
-      setError("Please enter a valid payment amount."); // Handle invalid input
+      setError('Please enter a valid payment amount.'); // Handle invalid input
       return;
     }
 
@@ -405,42 +408,45 @@ const handlePrint = async (sale) => {
     setIsAddPaymentModalOpen(false); // Close the modal
   };
 
-
   const updateSaleStatus = async (saleId, newStatus) => {
     try {
-      const response = await fetch("/Sales/Create/sales", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ saleId, status: newStatus }),
-      });
-  
+      // const response = await fetch('/Sales/Create/sales',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/put-sales`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ saleId, status: newStatus }),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error("Failed to update sale status");
+        throw new Error('Failed to update sale status');
       }
-  
+
       const data = await response.json();
-      toast.success("Status updated successfully:", data.sale);
+      toast.success('Status updated successfully:', data.sale);
       return data.sale; // Return the updated sale object
     } catch (error) {
-      console.error("Error updating status:", error.message);
+      console.error('Error updating status:', error.message);
       throw error; // Rethrow the error for further handling
     }
   };
-  
-   // Open the modal and set the selected sale
-   const openReturnModal = (sale) => {
-    setActiveModal("Return"); // Set the modal name
+
+  // Open the modal and set the selected sale
+  const openReturnModal = (sale) => {
+    setActiveModal('Return'); // Set the modal name
     setSelectedSale(sale); // Set the sale data
-    setStatus(sale.status || ""); // Initialize status from the sale
+    setStatus(sale.status || ''); // Initialize status from the sale
   };
 
   // Close the modal
   const closeModal = () => {
-    setActiveModal(""); // Reset the modal name
+    setActiveModal(''); // Reset the modal name
     setSelectedSale(null); // Clear the selected sale
-    setStatus(""); // Reset the status
+    setStatus(''); // Reset the status
   };
 
   // Handle status change status
@@ -452,7 +458,7 @@ const handlePrint = async (sale) => {
   const handleSave = async () => {
     try {
       const updatedSale = await updateSaleStatus(selectedSale.id, status);
-      console.log("Updated Sale:", updatedSale);
+      console.log('Updated Sale:', updatedSale);
       // Optionally update the local state to reflect the new status
       setSales((prevSales) =>
         prevSales.map((sale) =>
@@ -461,245 +467,296 @@ const handlePrint = async (sale) => {
       );
       closeModal(); // Close the modal
     } catch (error) {
-      console.error("Failed to update status:", error.message);
-      toast.error("Failed to update the sale status. Please try again.");
+      console.error('Failed to update status:', error.message);
+      toast.error('Failed to update the sale status. Please try again.');
     }
   };
-  
-
 
   return (
-    <div className='bg-white dark:bg-[#141432] text-gray-500 dark:text-white font-nunito text-sm'>
-        <div className="p-2 md:mt-[5%] mt-[20%]">
-      {/* Header with statistics */}
+    <div className="bg-white dark:bg-[#141432] text-gray-500 dark:text-white font-nunito text-sm">
+      <div className="p-2 md:mt-[5%] mt-[20%]">
+        {/* Header with statistics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-blue-600 text-white p-4 rounded shadow-sm">
+          <div className="bg-blue-600 text-white p-4 rounded shadow-sm">
             <h3 className=" ">Sold Today</h3>
             <p className=" dark:text-white ">
-              Tk {sales?.filter((sale) => 
-                new Date(sale.sale_date).toLocaleDateString() === new Date().toLocaleDateString()
-              ).reduce((sum, sale) => sum + Number(sale.total_payable || 0), 0).toFixed(2)}
+              Tk{' '}
+              {sales
+                ?.filter(
+                  (sale) =>
+                    new Date(sale.sale_date).toLocaleDateString() ===
+                    new Date().toLocaleDateString()
+                )
+                .reduce((sum, sale) => sum + Number(sale.total_payable || 0), 0)
+                .toFixed(2)}
             </p>
           </div>
 
           <div className="bg-violet-500 text-white p-4 rounded shadow-sm">
             <h3 className=" ">Today Received</h3>
             <p className=" dark:text-white ">
-              Tk {sales?.filter((sale) => 
-                new Date(sale.sale_date).toLocaleDateString() === new Date().toLocaleDateString()
-              ).reduce((sum, sale) => sum + Number(sale.amount_paid || 0), 0).toFixed(2)}
+              Tk{' '}
+              {sales
+                ?.filter(
+                  (sale) =>
+                    new Date(sale.sale_date).toLocaleDateString() ===
+                    new Date().toLocaleDateString()
+                )
+                .reduce((sum, sale) => sum + Number(sale.amount_paid || 0), 0)
+                .toFixed(2)}
             </p>
           </div>
 
-          {/* <div className="bg-red-500 text-white p-4 rounded shadow-sm">
+          <div className="bg-red-500 text-white p-4 rounded shadow-sm">
             <h3 className=" ">Today Profit</h3>
             <p className=" dark:text-white ">
-              Tk {sales?.filter((sale) => 
-                new Date(sale.sale_date).toLocaleDateString() === new Date().toLocaleDateString()
-              ).reduce((sum, sale) => {
-                const totalProfit = Number(sale.total || 0) - 
-                  (sale.products?.reduce((productSum, product) => productSum + Number(product.purchase_cost || 0), 0) || 0);
-                return sum + totalProfit;
-              }, 0).toFixed(2)}
+              Tk{' '}
+              {sales
+                ?.filter(
+                  (sale) =>
+                    new Date(sale.sale_date).toLocaleDateString() ===
+                    new Date().toLocaleDateString()
+                )
+                .reduce((sum, sale) => {
+                  const totalProfit =
+                    Number(sale.total || 0) -
+                    (sale.products?.reduce(
+                      (productSum, product) =>
+                        productSum + Number(product.purchase_cost || 0),
+                      0
+                    ) || 0);
+                  return sum + totalProfit;
+                }, 0)
+                .toFixed(2)}
             </p>
-          </div> */}
+          </div>
 
           <div className="bg-green-600 text-white p-4 rounded shadow-sm">
             <h3 className=" ">Total Sold</h3>
             <p className="dark:text-white">
-              Tk {totalPayable.toLocaleString()} {/* Format the number with commas */}
+              Tk {totalPayable.toLocaleString()}{' '}
+              {/* Format the number with commas */}
             </p>
           </div>
-
-
         </div>
 
-      {/* Filter Section */}
-      <div className="md:flex flex-wrap gap-4 mb-6">
-      <input
-          type="text"
-          placeholder="Bill Number"
-          value={billNumber}
-          onChange={(e) => setBillNumber(e.target.value)}
-          className="border rounded p-2 dark:text-black bg-white w-full md:w-1/6"
-        />
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="border rounded dark:text-black bg-white p-2 w-full md:w-1/6"
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="border rounded dark:text-black bg-white p-2 w-full md:w-1/6"
-        />
-        <select
-          value={selectedCustomer}
-          onChange={(e) => setSelectedCustomer(e.target.value)}
-          className="border rounded p-2 w-full md:w-1/6 bg-white dark:text-black"
-        >
-          <option value="">Select Customer</option>
-          {uniqueCustomers?.map((customer, index) => (
-            <option key={index} value={customer}>
-              {customer}
-            </option>
-          ))}
-        </select>
-        <button
-          onClick={handleFilter}
-          className="bg-blue-500 text-white p-2 rounded w-full md:w-1/6"
-        >
-          Filter
-        </button>
-        <button
-          onClick={handleReset}
-          className="bg-gray-500 text-white p-2 rounded w-full md:w-[11%]"
-        >
-          Reset
-        </button>
-      </div>
-      <div className='flex justify-end mb-2'>
-       <Link href="/Sales/Create"> 
-        <button className='btn bg-sky-500 text-white hover:bg-purple-500 '>Add+</button>
-       </Link>
-      </div>
+        {/* Filter Section */}
+        <div className="md:flex flex-wrap gap-4 mb-6">
+          <input
+            type="text"
+            placeholder="Bill Number"
+            value={billNumber}
+            onChange={(e) => setBillNumber(e.target.value)}
+            className="border rounded p-2 dark:text-black bg-white w-full md:w-1/6"
+          />
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border rounded dark:text-black bg-white p-2 w-full md:w-1/6"
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border rounded dark:text-black bg-white p-2 w-full md:w-1/6"
+          />
+          <select
+            value={selectedCustomer}
+            onChange={(e) => setSelectedCustomer(e.target.value)}
+            className="border rounded p-2 w-full md:w-1/6 bg-white dark:text-black"
+          >
+            <option value="">Select Customer</option>
+            {uniqueCustomers?.map((customer, index) => (
+              <option key={index} value={customer}>
+                {customer}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={handleFilter}
+            className="bg-blue-500 text-white p-2 rounded w-full md:w-1/6"
+          >
+            Filter
+          </button>
+          <button
+            onClick={handleReset}
+            className="bg-gray-500 text-white p-2 rounded w-full md:w-[11%]"
+          >
+            Reset
+          </button>
+        </div>
+        <div className="flex justify-end mb-2">
+          <Link href="/Sales/Create">
+            <button className="btn bg-sky-500 text-white hover:bg-purple-500 ">
+              Add+
+            </button>
+          </Link>
+        </div>
 
-      {/* Sales Table */}
-      <div className="overflow-x-auto h-screen">
-        <table className="table-auto dark:text-white w-full border-collapse border">
-          <thead className="border">
-            <tr className='bg-emerald-500 text-white'>
-              <th className="p-2 border">Invoice No.</th>
-              <th className="p-2 border">Customer</th>
-              <th className="p-2 border">Items</th>
-              <th className="p-2 border">Date</th>
-              <th className="p-2 border">Discount</th>
-              <th className="p-2 border">Receivable</th>
-              <th className="p-2 border">Paid</th>
-              <th className="p-2 border">Due</th>
-              <th className="p-2 border">Purchase Cost</th>
-              <th className="p-2 border">Profit</th>
-              <th className="p-2 border">Status</th>
-              <th className="p-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody className='border'>
-            {/* {dataToDisplay?.map((sale) => (
-              <tr key={sale.invoice_no}>
-              <td className="p-2 border">{sale.invoice_no}</td>
-              <td className="p-2 border">{sale.selected_customer}</td>
-              <td className="p-2 border">
-                {sale.products?.map((product) => product.product_name).join(', ') || 'No Products'} - quantity  {sale.products?.map((product) => product.quantity).join(', ') || 0}
-              </td>
+        {/* Sales Table */}
+        <div className="overflow-x-auto h-screen">
+          <table className="table-auto dark:text-white w-full border-collapse border">
+            <thead className="border">
+              <tr className="bg-emerald-500 text-white">
+                <th className="p-2 border">Invoice No.</th>
+                <th className="p-2 border">Customer</th>
+                <th className="p-2 border">Items</th>
+                <th className="p-2 border">Date</th>
+                <th className="p-2 border">Discount</th>
+                <th className="p-2 border">Receivable</th>
+                <th className="p-2 border">Paid</th>
+                <th className="p-2 border">Due</th>
+                <th className="p-2 border">Purchase Cost</th>
+                <th className="p-2 border">Profit</th>
+                <th className="p-2 border">Status</th>
+                <th className="p-2 border">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="border">
+              {dataToDisplay?.map((sale) => (
+                <tr key={sale.invoice_no}>
+                  <td className="p-2 border">{sale.invoice_no}</td>
+                  <td className="p-2 border">{sale.selected_customer}</td>
+                  <td className="p-2 border">
+                    {sale.products
+                      ?.map((product) => product.product_name)
+                      .join(', ') || 'No Products'}{' '}
+                    - quantity{' '}
+                    {sale.products
+                      ?.map((product) => product.quantity)
+                      .join(', ') || 0}
+                  </td>
 
-              <td className="p-2 border">{new Date(sale.sale_date).toLocaleDateString()}</td>
-              <td className="p-2 border">{sale.discount_amount}</td>
-              <td className="p-2 border">{sale.total_payable}</td>
-              <td className="p-2 border">{sale.amount_paid}</td>
-              <td className="p-2 border">
-                {Number(sale.amount_paid) > Number(sale.total_payable) ? (
-                  <span className="text-green-500">
-                    Overpaid: {Math.abs(Number(sale.total_payable) - Number(sale.amount_paid)).toFixed(2)}
-                  </span>
-                ) : (
-                  <span className="text-red-500">
-                    Due: {Math.abs(Number(sale.total_payable) - Number(sale.amount_paid)).toFixed(2)}
-                  </span>
-                )}
-              </td>
+                  <td className="p-2 border">
+                    {new Date(sale.sale_date).toLocaleDateString()}
+                  </td>
+                  <td className="p-2 border">{sale.discount_amount}</td>
+                  <td className="p-2 border">{sale.total_payable}</td>
+                  <td className="p-2 border">{sale.amount_paid}</td>
+                  <td className="p-2 border">
+                    {Number(sale.amount_paid) > Number(sale.total_payable) ? (
+                      <span className="text-green-500">
+                        Overpaid:{' '}
+                        {Math.abs(
+                          Number(sale.total_payable) - Number(sale.amount_paid)
+                        ).toFixed(2)}
+                      </span>
+                    ) : (
+                      <span className="text-red-500">
+                        Due:{' '}
+                        {Math.abs(
+                          Number(sale.total_payable) - Number(sale.amount_paid)
+                        ).toFixed(2)}
+                      </span>
+                    )}
+                  </td>
 
-              <td className="p-2 border">
-                {sale.products?.map((product) => product.purchase_cost).join(', ') || 0}
-              </td>
-              <td className="p-2 border">
-                {
-                  sale.products.reduce((totalProfit, product) => {
-                    const saleRevenue = product.sale_price * product.quantity;
-                    const totalCost = product.purchase_cost * product.quantity;
+                  <td className="p-2 border">
+                    {sale.products
+                      ?.map((product) => product.purchase_cost)
+                      .join(', ') || 0}
+                  </td>
+                  <td className="p-2 border">
+                    {sale.products.reduce((totalProfit, product) => {
+                      const saleRevenue = product.sale_price * product.quantity;
+                      const totalCost =
+                        product.purchase_cost * product.quantity;
 
-                    // Calculate profit after discount
-                    const discountValue = sale.discount_type === "Percentage" 
-                      ? (sale.discount_amount / 100) * saleRevenue 
-                      : parseFloat(sale.discount_amount || 0);
+                      // Calculate profit after discount
+                      const discountValue =
+                        sale.discount_type === 'Percentage'
+                          ? (sale.discount_amount / 100) * saleRevenue
+                          : parseFloat(sale.discount_amount || 0);
 
-                    const discountedRevenue = saleRevenue - discountValue;
-                    return totalProfit + (discountedRevenue - totalCost);
-                  }, 0) 
-                }TK
-              </td>
+                      const discountedRevenue = saleRevenue - discountValue;
+                      return totalProfit + (discountedRevenue - totalCost);
+                    }, 0)}
+                    TK
+                  </td>
 
-              <td
-                className={`p-2 border ${
-                  sale.status === "Completed" 
-                    ? "text-green-500" 
-                    : sale.status 
-                      ? "text-yellow-400" 
-                      : "text-gray-400"
-                }`}
-              >
-                {sale.status || "Not Set"}
-              </td>
+                  <td
+                    className={`p-2 border ${
+                      sale.status === 'Completed'
+                        ? 'text-green-500'
+                        : sale.status
+                          ? 'text-yellow-400'
+                          : 'text-gray-400'
+                    }`}
+                  >
+                    {sale.status || 'Not Set'}
+                  </td>
 
-                <td className="p-2 border">
-                  {/* Action buttons */}
-                  {/* <div className="relative">
-                  <div className="dropdown dropdown-end">
-                    <div tabIndex={0} role="button" className=" m-1">
-                    <button
-                      
-                      className="p-1 flex gap-2 items-center transform cursor-pointer text-sky-400 hover:text-red-500 hover:scale-110 border"
-                    >
-                      Action<ChevronDown strokeWidth={1.25} size={20} />
-                    </button>
-                    </div>
-                    <ul key={sale.invoice_no} tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-                    <li
-                      
-                      className="p-2 hover:bg-base-200 cursor-pointer "
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePrint(sale);
-                      }}
-                    >
-                      Invoice
-                    </li> */} 
-                      {/* <li className="p-2 cursor-pointer">
+                  <td className="p-2 border">
+                    {/* Action buttons */}
+                    <div className="relative">
+                      <div className="dropdown dropdown-end">
+                        <div tabIndex={0} role="button" className=" m-1">
+                          <button className="p-1 flex gap-2 items-center transform cursor-pointer text-sky-400 hover:text-red-500 hover:scale-110 border">
+                            Action
+                            <ChevronDown strokeWidth={1.25} size={20} />
+                          </button>
+                        </div>
+                        <ul
+                          key={sale.invoice_no}
+                          tabIndex={0}
+                          className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+                        >
+                          <li
+                            className="p-2 hover:bg-base-200 cursor-pointer "
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePrint(sale);
+                            }}
+                          >
+                            Invoice
+                          </li>
+                          {/* <li className="p-2 cursor-pointer">
                           <Printer /> Challan Print
                       </li> */}
-                      {/* <li onClick={() => handleEditClick(sale)} className="p-2 hover:bg-base-200 cursor-pointer">
-                          Edit
-                      </li>
-                      <li onClick={() => handleShowModal(sale)} className="p-2 hover:bg-base-200 cursor-pointer">
-                          Show
-                      </li>
-                      <li className="p-2 hover:bg-base-200 cursor-pointer" onClick={()=>openReturnModal(sale)}>
-                        Status
-                      </li>
-                      <li className="p-2 hover:bg-base-200 cursor-pointer">
-                          Return List
-                      </li>
-                      <li onClick={()=>handleAddPaymentClick(sale)} className="p-2 hover:bg-base-200 cursor-pointer">
-                          Add Payment
-                      </li>
-                      <li className="p-2 hover:bg-base-200 cursor-pointer">
-                          Delete
-                      </li>
-                    </ul>
-                  </div>
-                  </div>
-                </td>
-              </tr>
-            ))} */}
-          </tbody>
-        </table>
+                          <li
+                            onClick={() => handleEditClick(sale)}
+                            className="p-2 hover:bg-base-200 cursor-pointer"
+                          >
+                            Edit
+                          </li>
+                          <li
+                            onClick={() => handleShowModal(sale)}
+                            className="p-2 hover:bg-base-200 cursor-pointer"
+                          >
+                            Show
+                          </li>
+                          <li
+                            className="p-2 hover:bg-base-200 cursor-pointer"
+                            onClick={() => openReturnModal(sale)}
+                          >
+                            Status
+                          </li>
+                          <li className="p-2 hover:bg-base-200 cursor-pointer">
+                            Return List
+                          </li>
+                          <li
+                            onClick={() => handleAddPaymentClick(sale)}
+                            className="p-2 hover:bg-base-200 cursor-pointer"
+                          >
+                            Add Payment
+                          </li>
+                          <li className="p-2 hover:bg-base-200 cursor-pointer">
+                            Delete
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
-
-            {/* show modal */}
-    {isShowModalOpen && selectedSale && (
+      {/* show modal */}
+      {isShowModalOpen && selectedSale && (
         <div
           className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50"
           onClick={handleCloseModal}
@@ -721,7 +778,7 @@ const handlePrint = async (sale) => {
               <strong>Status:</strong> {selectedSale.status}
             </p>
             <p className="mb-4">
-              <strong>Payment Date:</strong>{" "}
+              <strong>Payment Date:</strong>{' '}
               {new Date(selectedSale.payment_date).toLocaleDateString()}
             </p>
 
@@ -729,10 +786,14 @@ const handlePrint = async (sale) => {
             <table className="w-full border-collapse border border-gray-200 mb-4">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="border border-gray-200 px-4 py-2">Product Name</th>
+                  <th className="border border-gray-200 px-4 py-2">
+                    Product Name
+                  </th>
                   <th className="border border-gray-200 px-4 py-2">Details</th>
                   <th className="border border-gray-200 px-4 py-2">Quantity</th>
-                  <th className="border border-gray-200 px-4 py-2">Unit Price</th>
+                  <th className="border border-gray-200 px-4 py-2">
+                    Unit Price
+                  </th>
                   <th className="border border-gray-200 px-4 py-2">Subtotal</th>
                 </tr>
               </thead>
@@ -761,9 +822,14 @@ const handlePrint = async (sale) => {
 
             <div className="text-right font-bold">
               <p>Total: ${selectedSale.total}</p>
-              <p>Discount: ${selectedSale.discount_amount} ({selectedSale.discount_type})</p>
+              <p>
+                Discount: ${selectedSale.discount_amount} (
+                {selectedSale.discount_type})
+              </p>
               <p>Shipping Charges: ${selectedSale.shipping_charges}</p>
-              <p className="text-lg">Amount Payable: ${selectedSale.total_payable}</p>
+              <p className="text-lg">
+                Amount Payable: ${selectedSale.total_payable}
+              </p>
             </div>
 
             <button
@@ -787,7 +853,7 @@ const handlePrint = async (sale) => {
               <input
                 type="text"
                 name="product_name"
-                value={editableData.product_name || ""}
+                value={editableData.product_name || ''}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 p-2 rounded"
               />
@@ -797,7 +863,7 @@ const handlePrint = async (sale) => {
               <input
                 type="number"
                 name="quantity"
-                value={editableData.quantity || ""}
+                value={editableData.quantity || ''}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 p-2 rounded"
               />
@@ -807,7 +873,7 @@ const handlePrint = async (sale) => {
               <input
                 type="number"
                 name="sale_price"
-                value={editableData.sale_price || ""}
+                value={editableData.sale_price || ''}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 p-2 rounded"
               />
@@ -817,7 +883,7 @@ const handlePrint = async (sale) => {
               <input
                 type="number"
                 name="discount"
-                value={editableData.discount || ""}
+                value={editableData.discount || ''}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 p-2 rounded"
               />
@@ -827,7 +893,7 @@ const handlePrint = async (sale) => {
               <input
                 type="number"
                 name="receivable"
-                value={editableData.receivable || ""}
+                value={editableData.receivable || ''}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 p-2 rounded"
               />
@@ -837,7 +903,7 @@ const handlePrint = async (sale) => {
               <input
                 type="number"
                 name="paid"
-                value={editableData.paid || ""}
+                value={editableData.paid || ''}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 p-2 rounded"
               />
@@ -847,7 +913,7 @@ const handlePrint = async (sale) => {
               <input
                 type="number"
                 name="due"
-                value={editableData.due || ""}
+                value={editableData.due || ''}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 p-2 rounded"
               />
@@ -857,7 +923,7 @@ const handlePrint = async (sale) => {
               <input
                 type="number"
                 name="purchase_cost"
-                value={editableData.purchase_cost || ""}
+                value={editableData.purchase_cost || ''}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 p-2 rounded"
               />
@@ -866,7 +932,7 @@ const handlePrint = async (sale) => {
               <label className="block mb-2">Status</label>
               <select
                 name="status"
-                value={editableData.status || ""}
+                value={editableData.status || ''}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 p-2 rounded"
               >
@@ -897,7 +963,7 @@ const handlePrint = async (sale) => {
 
       {/* ----added payment modal----- */}
 
-            {isAddPaymentModalOpen && (
+      {isAddPaymentModalOpen && (
         <div className="fixed inset-0  flex items-center justify-center">
           <div className="bg-white p-6 rounded shadow-lg w-1/3">
             <h2 className="text-lg font-bold mb-4">Add Payment</h2>
@@ -935,7 +1001,7 @@ const handlePrint = async (sale) => {
 
       {/* -------return-------- */}
 
-      {activeModal === "Return" && (
+      {activeModal === 'Return' && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="bg-white p-6 rounded shadow-lg w-1/3">
             <h2 className="text-lg font-bold mb-4">Update Status</h2>
@@ -946,7 +1012,8 @@ const handlePrint = async (sale) => {
                   <strong>Invoice No:</strong> {selectedSale.invoice_no}
                 </p>
                 <p>
-                  <strong>Current Status:</strong> {selectedSale.status || "Not Set"}
+                  <strong>Current Status:</strong>{' '}
+                  {selectedSale.status || 'Not Set'}
                 </p>
               </div>
             )}
@@ -984,13 +1051,6 @@ const handlePrint = async (sale) => {
           </div>
         </div>
       )}
-
-
-
     </div>
-  )
+  );
 }
-
-
-
-

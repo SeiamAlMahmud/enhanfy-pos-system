@@ -1,27 +1,29 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddDamage() {
   const [availableProducts, setAvailableProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [date, setDate] = useState(new Date().toISOString().slice(0, 16)); // Default to current date and time
-  const [quantity, setQuantity] = useState("");
-  const [reason, setReason] = useState("");
+  const [quantity, setQuantity] = useState('');
+  const [reason, setReason] = useState('');
 
   useEffect(() => {
     // Fetch products from the backend
     const fetchProducts = async () => {
       try {
         // const response = await fetch("/Products/Create/products");
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`);
-        if (!response.ok) throw new Error("Failed to fetch products");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`
+        );
+        if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
         setAvailableProducts(data);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error('Error fetching products:', error);
         toast.error(error.message);
       }
     };
@@ -42,15 +44,15 @@ export default function AddDamage() {
 
     // Validate form fields
     if (!selectedProduct) {
-      toast.error("Please select a product.");
+      toast.error('Please select a product.');
       return;
     }
     if (!quantity || isNaN(quantity) || quantity <= 0) {
-      toast.error("Please enter a valid quantity.");
+      toast.error('Please enter a valid quantity.');
       return;
     }
     if (!reason.trim()) {
-      toast.error("Please provide a reason for the damage.");
+      toast.error('Please provide a reason for the damage.');
       return;
     }
 
@@ -67,25 +69,28 @@ export default function AddDamage() {
     try {
       // Send damage data to the backend
       // const response = await fetch("/Damages/damage", {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/post-damages`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(damageData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/post-damages`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(damageData),
+        }
+      );
 
       if (response.ok) {
-        toast.success("Damage record added successfully!");
+        toast.success('Damage record added successfully!');
         // Reset form fields
         setSelectedProduct(null);
-        setQuantity("");
+        setQuantity('');
         setDate(new Date().toISOString().slice(0, 16)); // Reset to current date and time
-        setReason("");
+        setReason('');
       } else {
-        toast.error("Failed to add damage record. Please try again.");
+        toast.error('Failed to add damage record. Please try again.');
       }
     } catch (error) {
-      console.error("Error adding damage record:", error);
-      toast.error("An error occurred while adding the damage record.");
+      console.error('Error adding damage record:', error);
+      toast.error('An error occurred while adding the damage record.');
     }
   };
 
@@ -109,7 +114,7 @@ export default function AddDamage() {
             <select
               id="product"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={selectedProduct ? selectedProduct.id : ""}
+              value={selectedProduct ? selectedProduct.id : ''}
               onChange={handleProductChange}
             >
               <option value="">Select Product</option>
@@ -124,8 +129,7 @@ export default function AddDamage() {
           {selectedProduct && (
             <div className="mb-4">
               <p className="text-gray-700 text-sm">
-                <strong>Purchase Cost:</strong> ৳
-                {selectedProduct.purchase_cost}
+                <strong>Purchase Cost:</strong> ৳{selectedProduct.purchase_cost}
               </p>
             </div>
           )}

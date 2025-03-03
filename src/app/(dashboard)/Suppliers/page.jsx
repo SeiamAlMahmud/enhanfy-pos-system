@@ -43,7 +43,10 @@ export default function SupplierList() {
   // Pagination logic
   const indexOfLastSupplier = currentPage * suppliersPerPage;
   const indexOfFirstSupplier = indexOfLastSupplier - suppliersPerPage;
-  const currentSuppliers = filteredSuppliers.slice(indexOfFirstSupplier, indexOfLastSupplier);
+  const currentSuppliers = filteredSuppliers.slice(
+    indexOfFirstSupplier,
+    indexOfLastSupplier
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -89,7 +92,9 @@ export default function SupplierList() {
       <div className="p-0 mt-[25%] lg:mt-[5%] w-full dark:text-white">
         {/* Title Section */}
         <div className="mb-4 shadow-sm">
-          <h1 className="text-lg dark:text-white text-gray-500 mx-5">Suppliers List</h1>
+          <h1 className="text-lg dark:text-white text-gray-500 mx-5">
+            Suppliers List
+          </h1>
           <div className="flex items-start justify-start mx-5 py-5 gap-10">
             <Link
               href="/Suppliers"
@@ -179,7 +184,9 @@ export default function SupplierList() {
                     <td className="px-4 border py-2">{supplier.address}</td>
                     <td className="px-4 border py-2">{supplier.balance} TK</td>
                     <td className="px-4 border py-2">{supplier.paid} TK</td>
-                    <td className="px-4 border py-2">{supplier.purchase_due} TK</td>
+                    <td className="px-4 border py-2">
+                      {supplier.purchase_due} TK
+                    </td>
                     <td className="px-4 border py-2">
                       {parseFloat(supplier.balance) +
                         parseFloat(supplier.purchase_due)}{' '}
@@ -213,7 +220,10 @@ export default function SupplierList() {
                                 onClick={() => alert('Generate Invoice')}
                               >
                                 <span className="mr-2">
-                                  <FaPrint size={16} className="text-teal-500" />
+                                  <FaPrint
+                                    size={16}
+                                    className="text-teal-500"
+                                  />
                                 </span>
                                 Invoice
                               </button>
@@ -224,7 +234,10 @@ export default function SupplierList() {
                                 onClick={() => alert('Show Action')}
                               >
                                 <span className="mr-2 ">
-                                  <IoTvOutline size={16} className="text-blue-500" />
+                                  <IoTvOutline
+                                    size={16}
+                                    className="text-blue-500"
+                                  />
                                 </span>
                                 Show
                               </button>
@@ -246,7 +259,10 @@ export default function SupplierList() {
                                 onClick={() => alert('Add Payment Action')}
                               >
                                 <span className="mr-2">
-                                  <MdOutlinePayments size={16} className="text-teal-500" />
+                                  <MdOutlinePayments
+                                    size={16}
+                                    className="text-teal-500"
+                                  />
                                 </span>
                                 Add Payment
                               </button>

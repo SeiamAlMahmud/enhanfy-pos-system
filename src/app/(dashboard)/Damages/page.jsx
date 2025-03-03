@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import { Trash2 } from "lucide-react";
-import Link from "next/link";
-import { toast } from "react-toastify";
+import React, { useEffect, useRef, useState } from 'react';
+import { Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 export default function Damages() {
   const printRef = useRef();
-  const [filterText, setFilterText] = useState("");
+  const [filterText, setFilterText] = useState('');
   const [damages, setDamages] = useState([]);
   const [filteredDamages, setFilteredDamages] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -17,10 +17,13 @@ export default function Damages() {
   const fetchDamages = async () => {
     try {
       // const response = await fetch("/Damages/damage", {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/get-damages`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/get-damages`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -28,11 +31,11 @@ export default function Damages() {
         setFilteredDamages(data.damages || []);
       } else {
         const error = await response.json();
-        toast.error(error.error || "Failed to fetch damages.");
+        toast.error(error.error || 'Failed to fetch damages.');
       }
     } catch (err) {
-      console.error("Error fetching damages:", err);
-      toast.error("An error occurred while fetching damages.");
+      console.error('Error fetching damages:', err);
+      toast.error('An error occurred while fetching damages.');
     }
   };
 
@@ -42,7 +45,9 @@ export default function Damages() {
 
     const filtered = damages.filter(
       (damage) =>
-        damage.product_name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        damage.product_name
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase()) ||
         damage.quantity.toString().includes(e.target.value)
     );
     setFilteredDamages(filtered);
@@ -50,7 +55,7 @@ export default function Damages() {
 
   // Reset filter
   const handleReset = () => {
-    setFilterText("");
+    setFilterText('');
     setFilteredDamages(damages);
   };
 
@@ -58,24 +63,29 @@ export default function Damages() {
   const handleDelete = async (id) => {
     try {
       // const response = await fetch("/Damages/damage", {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/delete-damages`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/delete-damages`,
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        }
+      );
 
       if (response.ok) {
-        toast.success("Damage record deleted successfully.");
+        toast.success('Damage record deleted successfully.');
         setDamages(damages.filter((damage) => damage.id !== id));
-        setFilteredDamages(filteredDamages.filter((damage) => damage.id !== id));
+        setFilteredDamages(
+          filteredDamages.filter((damage) => damage.id !== id)
+        );
         setShowModal(false);
       } else {
         const error = await response.json();
-        toast.error(error.error || "Failed to delete damage record.");
+        toast.error(error.error || 'Failed to delete damage record.');
       }
     } catch (err) {
-      console.error("Error deleting damage record:", err);
-      toast.error("An error occurred while deleting the damage record.");
+      console.error('Error deleting damage record:', err);
+      toast.error('An error occurred while deleting the damage record.');
     }
   };
 
@@ -93,8 +103,8 @@ export default function Damages() {
 
   // Print functionality
   const handlePrint = () => {
-    const printContent = document.getElementById("table-to-print").outerHTML;
-    const newWindow = window.open("", "_blank");
+    const printContent = document.getElementById('table-to-print').outerHTML;
+    const newWindow = window.open('', '_blank');
     newWindow.document.write(`
       <html>
         <head>
@@ -106,7 +116,7 @@ export default function Damages() {
           </style>
         </head>
         <body onload="window.print()">
-          ${printContent.replace(/<th>Actions<\/th>.*?<\/tr>/, "")} <!-- Remove the Actions column -->
+          ${printContent.replace(/<th>Actions<\/th>.*?<\/tr>/, '')} <!-- Remove the Actions column -->
         </body>
       </html>
     `);
@@ -160,7 +170,10 @@ export default function Damages() {
 
         {/* Damages Table */}
         <div ref={printRef} className="overflow-x-auto">
-          <table id="table-to-print" className="w-full text-center border-collapse print:block items-center justify-center">
+          <table
+            id="table-to-print"
+            className="w-full text-center border-collapse print:block items-center justify-center"
+          >
             <thead>
               <tr className="bg-emerald-500 text-white">
                 <th className="border p-2 print:table-cell">#</th>
@@ -176,11 +189,21 @@ export default function Damages() {
               {filteredDamages.map((damage, index) => (
                 <tr key={damage.id}>
                   <td className="border p-2 print:table-cell">{index + 1}</td>
-                  <td className="border p-2 print:table-cell">{new Date(damage.date).toLocaleDateString()}</td>
-                  <td className="border p-2 print:table-cell">{damage.product_name}</td>
-                  <td className="border p-2 print:table-cell">৳ {damage.purchase_cost}</td>
-                  <td className="border p-2 print:table-cell">{damage.quantity}</td>
-                  <td className="border p-2 print:table-cell">{damage.reason}</td>
+                  <td className="border p-2 print:table-cell">
+                    {new Date(damage.date).toLocaleDateString()}
+                  </td>
+                  <td className="border p-2 print:table-cell">
+                    {damage.product_name}
+                  </td>
+                  <td className="border p-2 print:table-cell">
+                    ৳ {damage.purchase_cost}
+                  </td>
+                  <td className="border p-2 print:table-cell">
+                    {damage.quantity}
+                  </td>
+                  <td className="border p-2 print:table-cell">
+                    {damage.reason}
+                  </td>
                   <td className="border p-2 print:hidden relative">
                     <button
                       onClick={() => handleOpenModal(damage)}
@@ -189,38 +212,38 @@ export default function Damages() {
                       <Trash2 size={16} strokeWidth={1.5} />
                     </button>
                   </td>
-                          {/* Delete Confirmation Modal */}
-                          {showModal && (
-                            <div className="fixed inset-0 flex items-center justify-center ">
-                              <div className="bg-white p-6 rounded shadow-lg">
-                                <h2 className="text-lg font-bold mb-4">Are you sure?</h2>
-                                
-                                <p>Product: {damage.product_name}</p>
-                                <p>You wont be able to revert this action!</p>
-                                <div className="flex justify-end mt-6">
-                                  <button
-                                    onClick={() => handleDelete(selectedDamage.id)}
-                                    className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-                                  >
-                                    Yes, delete it!
-                                  </button>
-                                  <button
-                                    onClick={handleCloseModal}
-                                    className="bg-gray-300 text-black px-4 py-2 rounded"
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                  {/* Delete Confirmation Modal */}
+                  {showModal && (
+                    <div className="fixed inset-0 flex items-center justify-center ">
+                      <div className="bg-white p-6 rounded shadow-lg">
+                        <h2 className="text-lg font-bold mb-4">
+                          Are you sure?
+                        </h2>
+
+                        <p>Product: {damage.product_name}</p>
+                        <p>You wont be able to revert this action!</p>
+                        <div className="flex justify-end mt-6">
+                          <button
+                            onClick={() => handleDelete(selectedDamage.id)}
+                            className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+                          >
+                            Yes, delete it!
+                          </button>
+                          <button
+                            onClick={handleCloseModal}
+                            className="bg-gray-300 text-black px-4 py-2 rounded"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
-
       </div>
     </div>
   );

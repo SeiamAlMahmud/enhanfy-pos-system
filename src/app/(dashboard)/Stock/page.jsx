@@ -26,7 +26,9 @@ export default function Stock() {
     const fetchProducts = async () => {
       try {
         // const response = await fetch('/Products/Create/products');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`
+        );
         if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
         setProducts(data);
@@ -54,7 +56,9 @@ export default function Stock() {
     const fetchSales = async () => {
       try {
         // const response = await fetch('/Sales/Create/sales');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/get-sales`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/get-sales`
+        );
         if (!response.ok) throw new Error('Failed to fetch sales');
         const data = await response.json();
         setSales(data);
@@ -72,7 +76,9 @@ export default function Stock() {
     const fetchDamages = async () => {
       try {
         // const response = await fetch('/Damages/damage');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/get-damages`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/damages/get-damages`
+        );
         if (!response.ok) throw new Error('Failed to fetch damages');
         const data = await response.json();
         setDamages(data.damages || []);
@@ -109,12 +115,13 @@ export default function Stock() {
           sold: soldQuantity,
           returned: returnedQuantity,
           damaged: damagedQuantity,
-          availableStock: product.opening_stock - soldQuantity  - damagedQuantity,
+          availableStock:
+            product.opening_stock - soldQuantity - damagedQuantity,
         };
       });
 
       setFilteredData(aggregatedData);
-      console.log("stock");
+      console.log('stock');
       setLoading(false);
     }
   }, [products, sales, damages]);
@@ -134,11 +141,15 @@ export default function Stock() {
     const filtered = products.filter((item) => {
       const productNameMatch =
         newFilters.productName === '' ||
-        item.product_name?.toLowerCase().includes(newFilters.productName.toLowerCase());
+        item.product_name
+          ?.toLowerCase()
+          .includes(newFilters.productName.toLowerCase());
 
       const productCodeMatch =
         newFilters.productCode === '' ||
-        item.product_code?.toLowerCase().includes(newFilters.productCode.toLowerCase());
+        item.product_code
+          ?.toLowerCase()
+          .includes(newFilters.productCode.toLowerCase());
 
       const categoryMatch =
         newFilters.category === '' ||
@@ -182,7 +193,12 @@ export default function Stock() {
     newWindow.document.close();
   };
 
-  if (loading) return <p><Loader /></p>;
+  if (loading)
+    return (
+      <p>
+        <Loader />
+      </p>
+    );
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -230,17 +246,26 @@ export default function Stock() {
               </option>
             ))}
           </select>
-          <button onClick={() => applyFilters(filters)} className="bg-green-500 text-white px-10 py-2 rounded-md hover:bg-green-600">
+          <button
+            onClick={() => applyFilters(filters)}
+            className="bg-green-500 text-white px-10 py-2 rounded-md hover:bg-green-600"
+          >
             Filter
           </button>
-          <button onClick={resetFilters} className="bg-gray-500 text-white px-10 py-2 rounded-md hover:bg-gray-600">
+          <button
+            onClick={resetFilters}
+            className="bg-gray-500 text-white px-10 py-2 rounded-md hover:bg-gray-600"
+          >
             Reset
           </button>
         </div>
 
         {/* Product Stock Table */}
         <div ref={printRef} className="overflow-auto">
-          <table id="table-to-print" className="w-full table-auto dark:text-white border-collapse bg-white text-sm text-center">
+          <table
+            id="table-to-print"
+            className="w-full table-auto dark:text-white border-collapse bg-white text-sm text-center"
+          >
             <thead className="bg-gray-100">
               <tr className="bg-emerald-500 text-white">
                 <th className="px-1 py-2">#</th>
@@ -270,7 +295,9 @@ export default function Stock() {
                     />
                   </td>
                   <td className="border px-1 py-2">{product.product_name}</td>
-                  <td className="border px-1 py-2">{product.category || "Not Set"}</td>
+                  <td className="border px-1 py-2">
+                    {product.category || 'Not Set'}
+                  </td>
                   <td className="border px-1 py-2">{product.sale_price}</td>
                   <td className="border px-1 py-2">{product.sub_unit || 0}</td>
                   <td className="border px-1 py-2">{product.sold}</td>

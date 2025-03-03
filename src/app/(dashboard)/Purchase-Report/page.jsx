@@ -1,21 +1,21 @@
-"use client";
-import React, { useState, useEffect } from "react";
+'use client';
+import React, { useState, useEffect } from 'react';
 
 export default function PurchaseReport() {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [productFilter, setProductFilter] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [productFilter, setProductFilter] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const itemsPerPage = 15; // Set items per page for pagination
 
   // Fetch purchase data
   useEffect(() => {
     const fetchPurchases = async () => {
       try {
-        const response = await fetch("/Purchase/Create/purchase"); // Update endpoint if necessary
-        if (!response.ok) throw new Error("Failed to fetch purchases");
+        const response = await fetch('/Purchase/Create/purchase'); // Update endpoint if necessary
+        if (!response.ok) throw new Error('Failed to fetch purchases');
         const purchasesData = await response.json();
         const flattenedData = purchasesData.purchases.flatMap((purchase) =>
           (purchase.products || []).map((product, index) => ({
@@ -23,7 +23,7 @@ export default function PurchaseReport() {
             date: new Date(purchase.purchase_date).toISOString().slice(0, 10),
             purchaseNo: purchase.invoice_no,
             productName: product.product_name,
-            quantity: `${product.quantity} ${product.main_unit || "pcs"}`,
+            quantity: `${product.quantity} ${product.main_unit || 'pcs'}`,
             unitPrice: `${Number(product.purchase_cost || 0).toLocaleString()} TK`,
             subtotal: `${(product.quantity * product.purchase_cost).toLocaleString()} TK`,
           }))
@@ -31,7 +31,7 @@ export default function PurchaseReport() {
         setData(flattenedData);
         setFilteredData(flattenedData); // Initialize filtered data
       } catch (error) {
-        console.error("Error fetching purchases:", error);
+        console.error('Error fetching purchases:', error);
       }
     };
 
@@ -63,9 +63,9 @@ export default function PurchaseReport() {
   // Reset filters
   const resetFilter = () => {
     setFilteredData(data);
-    setProductFilter("");
-    setStartDate("");
-    setEndDate("");
+    setProductFilter('');
+    setStartDate('');
+    setEndDate('');
     setCurrentPage(1); // Reset to the first page
   };
 
@@ -79,8 +79,8 @@ export default function PurchaseReport() {
 
   // Print functionality
   const handlePrint = () => {
-    const printContent = document.getElementById("table-to-print").outerHTML;
-    const newWindow = window.open("", "_blank");
+    const printContent = document.getElementById('table-to-print').outerHTML;
+    const newWindow = window.open('', '_blank');
     newWindow.document.write(`
       <html>
         <head>
@@ -92,7 +92,7 @@ export default function PurchaseReport() {
           </style>
         </head>
         <body onload="window.print()">
-          ${printContent.replace(/<th>Actions<\/th>.*?<\/tr>/, "")} <!-- Remove the Actions column -->
+          ${printContent.replace(/<th>Actions<\/th>.*?<\/tr>/, '')} <!-- Remove the Actions column -->
         </body>
       </html>
     `);
@@ -111,11 +111,13 @@ export default function PurchaseReport() {
           className="border p-2 rounded-md w-full md:w-1/4"
         >
           <option value="">Select a Product</option>
-          {[...new Set(data.map((item) => item.productName))].map((product, index) => (
-            <option key={index} value={product}>
-              {product}
-            </option>
-          ))}
+          {[...new Set(data.map((item) => item.productName))].map(
+            (product, index) => (
+              <option key={index} value={product}>
+                {product}
+              </option>
+            )
+          )}
         </select>
 
         <input
@@ -195,9 +197,7 @@ export default function PurchaseReport() {
             key={i}
             onClick={() => handlePageChange(i + 1)}
             className={`px-4 py-2 ${
-              currentPage === i + 1
-                ? "bg-blue-500 text-white"
-                : "bg-gray-300"
+              currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-300'
             } rounded-md`}
           >
             {i + 1}

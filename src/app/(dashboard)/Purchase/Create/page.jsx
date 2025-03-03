@@ -8,7 +8,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddPurchase() {
-  const spanClass = " block h-0.5 bg-gradient-to-r from-pink-500 to-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-700"
+  const spanClass =
+    ' block h-0.5 bg-gradient-to-r from-pink-500 to-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-700';
   const [suppliers, setSuppliers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState('');
   const [purchaseDate, setPurchaseDate] = useState(new Date()); // Purchase Date
@@ -30,11 +31,15 @@ export default function AddPurchase() {
   const [accounts, setAccounts] = useState([]);
   const [paymentDate, setPaymentDate] = useState(new Date());
   const [paymentMethod, setPaymentMethod] = useState('Cash');
-  const [paymentAccount, setPaymentAccount] = useState({ account_id: '', name: '' });
+  const [paymentAccount, setPaymentAccount] = useState({
+    account_id: '',
+    name: '',
+  });
   const [paymentNote, setPaymentNote] = useState('');
   const [availableProducts, setAvailableProducts] = useState([]);
 
-  const parseToNumber = (value) => (isNaN(parseFloat(value)) ? 0 : parseFloat(value));
+  const parseToNumber = (value) =>
+    isNaN(parseFloat(value)) ? 0 : parseFloat(value);
 
   useEffect(() => {
     // Generate a random invoice number on load
@@ -54,7 +59,8 @@ export default function AddPurchase() {
 
   const handleProductChange = (index, field, value) => {
     const updatedProducts = [...products];
-    updatedProducts[index][field] = field === 'quantity' ? parseToNumber(value) : value;
+    updatedProducts[index][field] =
+      field === 'quantity' ? parseToNumber(value) : value;
 
     const quantity = parseToNumber(updatedProducts[index].quantity) || 1;
     const unitPrice = parseToNumber(updatedProducts[index].purchase_cost) || 0;
@@ -65,7 +71,10 @@ export default function AddPurchase() {
   };
 
   const calculateTotal = (productsList) => {
-    const totalAmount = productsList.reduce((sum, product) => sum + product.subtotal, 0);
+    const totalAmount = productsList.reduce(
+      (sum, product) => sum + product.subtotal,
+      0
+    );
     setTotal(totalAmount);
   };
 
@@ -122,7 +131,9 @@ export default function AddPurchase() {
     const fetchProducts = async () => {
       try {
         // const response = await fetch('/Products/Create/products');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`
+        );
         if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
         setAvailableProducts(data);
@@ -134,30 +145,34 @@ export default function AddPurchase() {
     fetchProducts();
   }, []);
 
- // Fetch suppliers from the backend
- useEffect(() => {
-  const fetchSuppliers = async () => {
-    try {
-      // const response = await fetch('/Suppliers/suppliers');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/suppliers/get-suppliers`);
-      if (!response.ok) throw new Error('Failed to fetch suppliers');
-      const { suppliers } = await response.json();
-      console.log(suppliers);
-      setSuppliers(suppliers);
-    } catch (error) {
-      console.error('Error fetching suppliers:', error);
-      toast.error('Error fetching suppliers');
-    }
-  };
+  // Fetch suppliers from the backend
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        // const response = await fetch('/Suppliers/suppliers');
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/suppliers/get-suppliers`
+        );
+        if (!response.ok) throw new Error('Failed to fetch suppliers');
+        const { suppliers } = await response.json();
+        console.log(suppliers);
+        setSuppliers(suppliers);
+      } catch (error) {
+        console.error('Error fetching suppliers:', error);
+        toast.error('Error fetching suppliers');
+      }
+    };
 
-  fetchSuppliers();
-}, []);
+    fetchSuppliers();
+  }, []);
 
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
         // const response = await fetch('/Bank_Accounts/accounts');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`
+        );
         if (!response.ok) throw new Error('Failed to fetch accounts');
         const data = await response.json();
         setAccounts(data);
@@ -173,7 +188,7 @@ export default function AddPurchase() {
     e.preventDefault();
 
     const formData = {
-      supplier:selectedSupplier,
+      supplier: selectedSupplier,
       purchaseDate, // Include purchase date in the form data
       payTerm,
       status,
@@ -195,11 +210,14 @@ export default function AddPurchase() {
 
     try {
       // const response = await fetch('/Purchase/Create/purchase', {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/purchase/post-purchase`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/purchase/post-purchase`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         toast.success('Purchase saved successfully!');
@@ -215,16 +233,24 @@ export default function AddPurchase() {
     <div className="container mx-auto p-4 space-y-6 text-sm mt-[5%]">
       <h2 className="text-xl mb-4">Add Purchase</h2>
       <div className=" mb-4  shadow-sm ">
-      <h1 className="text-lg dark:text-white  text-gray-500 mx-5 ">Purchase</h1>
-        <div className='flex items-start justify-start mx-5 py-5 gap-10'>
-            <Link href="/Purchase" className="group text-gray-500 dark:text-white text-md hover:text-orange-500">
+        <h1 className="text-lg dark:text-white  text-gray-500 mx-5 ">
+          Purchase
+        </h1>
+        <div className="flex items-start justify-start mx-5 py-5 gap-10">
+          <Link
+            href="/Purchase"
+            className="group text-gray-500 dark:text-white text-md hover:text-orange-500"
+          >
             Purchase
             <span className={spanClass}></span>
-            </Link>
-            <Link href="/Purchase/Create" className="group text-gray-500 dark:text-white text-md hover:text-orange-500">
+          </Link>
+          <Link
+            href="/Purchase/Create"
+            className="group text-gray-500 dark:text-white text-md hover:text-orange-500"
+          >
             + Add Purchase
             <span className={spanClass}></span>
-            </Link>
+          </Link>
         </div>
       </div>
 
@@ -294,7 +320,7 @@ export default function AddPurchase() {
             value={searchQuery}
             onChange={handleSearch}
           />
-          
+
           {/* Show filtered products when searching */}
           {searchQuery && filteredProducts.length > 0 && (
             <div className="border rounded shadow overflow-auto max-h-64">
@@ -331,7 +357,9 @@ export default function AddPurchase() {
                         type="number"
                         min="1"
                         value={product.quantity}
-                        onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
+                        onChange={(e) =>
+                          handleProductChange(index, 'quantity', e.target.value)
+                        }
                         className="border rounded p-1 text-center"
                       />
                     </td>
@@ -483,17 +511,23 @@ export default function AddPurchase() {
               paymentStatus === 'paid'
                 ? 'text-green-600'
                 : paymentStatus === 'partial'
-                ? 'text-yellow-600'
-                : 'text-red-600'
+                  ? 'text-yellow-600'
+                  : 'text-red-600'
             }`}
           >
             Total Payable: ৳ {discountedTotal.toFixed(2)}
           </h3>
           <div className="flex gap-4 mt-4">
-            <button type="submit" className="bg-green-500 text-white p-2 rounded">
+            <button
+              type="submit"
+              className="bg-green-500 text-white p-2 rounded"
+            >
               Save
             </button>
-            <button type="button" className="bg-blue-500 text-white p-2 rounded">
+            <button
+              type="button"
+              className="bg-blue-500 text-white p-2 rounded"
+            >
               Save & Print
             </button>
           </div>
