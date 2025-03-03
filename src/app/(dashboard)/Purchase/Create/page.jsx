@@ -121,7 +121,8 @@ export default function AddPurchase() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/Products/Create/products');
+        // const response = await fetch('/Products/Create/products');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`);
         if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
         setAvailableProducts(data);
@@ -137,7 +138,8 @@ export default function AddPurchase() {
  useEffect(() => {
   const fetchSuppliers = async () => {
     try {
-      const response = await fetch('/Suppliers/suppliers');
+      // const response = await fetch('/Suppliers/suppliers');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/suppliers/get-suppliers`);
       if (!response.ok) throw new Error('Failed to fetch suppliers');
       const { suppliers } = await response.json();
       console.log(suppliers);
@@ -154,7 +156,8 @@ export default function AddPurchase() {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await fetch('/Bank_Accounts/accounts');
+        // const response = await fetch('/Bank_Accounts/accounts');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`);
         if (!response.ok) throw new Error('Failed to fetch accounts');
         const data = await response.json();
         setAccounts(data);
@@ -191,7 +194,8 @@ export default function AddPurchase() {
     };
 
     try {
-      const response = await fetch('/Purchase/Create/purchase', {
+      // const response = await fetch('/Purchase/Create/purchase', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/purchase/post-purchase`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

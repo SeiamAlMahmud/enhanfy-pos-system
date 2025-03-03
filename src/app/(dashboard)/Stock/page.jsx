@@ -38,6 +38,7 @@ export default function Stock() {
 
         // Initialize filtered data
         setFilteredData(data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching products:', error);
         setError(error.message);
@@ -110,6 +111,7 @@ export default function Stock() {
       });
 
       setFilteredData(aggregatedData);
+      console.log("stock");
       setLoading(false);
     }
   }, [products, sales, damages]);
