@@ -20,7 +20,8 @@ export default function Purchase() {
     useEffect(() => {
       const fetchPurchases = async () => {
         try {
-          const response = await fetch("/Purchase/Create/purchase"); // Update the endpoint based on your API setup
+          // const response = await fetch("/Purchase/Create/purchase"); // Update the endpoint based on your API setup
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/purchase/get-purchase`); // Update the endpoint based on your API setup
           if (!response.ok) throw new Error("Failed to fetch purchases");
           const data = await response.json();
           setPurchases(data.purchases);
