@@ -239,8 +239,9 @@ export default function CategoryList() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`/Categories/categories/${id}`, {
-        method: 'DELETE',
+      // const response = await fetch(`/Categories/categories/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/del-categories/${id}`, {
+        method: 'GET',
       });
       const result = await response.json();
 
@@ -250,6 +251,7 @@ export default function CategoryList() {
       // Update state to remove the deleted item
       setProducts(products.filter((product) => product.id !== id));
       toast.success('Category deleted successfully!');
+      fetchCategories();
     } catch (error) {
       console.error('Error deleting category:', error);
       toast.error('Failed to delete category');
@@ -267,8 +269,8 @@ export default function CategoryList() {
   // API Call to Update Category
   const updateCategory = async (updatedData) => {
     try {
-      const response = await fetch(
-        `/Categories/categories/${selectedCategory.id}`,
+      // const response = await fetch(`/Categories/categories/${selectedCategory.id}`,
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/put-categories/${selectedCategory.id}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -281,6 +283,7 @@ export default function CategoryList() {
 
       toast.success('Category updated successfully!');
       handleCloseModal();
+      fetchCategories();
     } catch (error) {
       //   console.error('Error updating category:', error);
       //   toast.error('Failed to update category');
