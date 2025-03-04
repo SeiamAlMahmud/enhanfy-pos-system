@@ -16,10 +16,9 @@ export async function GET() {
   }
 }
 
-
 export async function POST(req) {
   try {
-    const { unitName, unitValue, relatedTo , relatedSign} = await req.json();
+    const { unitName, unitValue, relatedTo, relatedSign } = await req.json();
 
     const result = await query(
       `
@@ -27,7 +26,7 @@ export async function POST(req) {
       VALUES ($1, $2, $3, $4)
       RETURNING *;
       `,
-      [unitName, unitValue, relatedTo , relatedSign]
+      [unitName, unitValue, relatedTo, relatedSign]
     );
 
     return new Response(JSON.stringify(result.rows[0]), {

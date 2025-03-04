@@ -157,7 +157,9 @@ export default function AddSale() {
     const fetchCustomers = async () => {
       try {
         // const response = await fetch('/Customers/customer');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customers/get-customers`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customers/get-customers`
+        );
         if (!response.ok) throw new Error('Failed to fetch customers');
 
         const { customers } = await response.json();
@@ -175,7 +177,9 @@ export default function AddSale() {
     async function fetchAccounts() {
       try {
         // const response = await fetch('/Bank_Accounts/accounts');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch accounts');
         }
@@ -230,7 +234,7 @@ export default function AddSale() {
     };
 
     try {
-       // const response = await fetch('/Sales/Create/sales');
+      // const response = await fetch('/Sales/Create/sales');
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/post-sales`,
         {
@@ -294,7 +298,7 @@ export default function AddSale() {
               <input
                 type="text"
                 // value={'Type your billing address'}
-                placeholder='Type your billing address'
+                placeholder="Type your billing address"
                 className="w-full p-2 border rounded bg-gray-100"
               />
             </div>
@@ -303,7 +307,7 @@ export default function AddSale() {
               <input
                 type="text"
                 // value={'Type your shipping address'}
-                placeholder='Type your billing address'
+                placeholder="Type your billing address"
                 className="w-full p-2 border rounded bg-gray-100"
               />
             </div>

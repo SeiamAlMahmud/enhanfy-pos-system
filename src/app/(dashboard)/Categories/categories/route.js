@@ -2,11 +2,16 @@ import { query } from '../../../../lib/db';
 
 export async function GET() {
   try {
-    const result = await query('SELECT * FROM categories ORDER BY created_on DESC');
+    const result = await query(
+      'SELECT * FROM categories ORDER BY created_on DESC'
+    );
     return new Response(JSON.stringify(result.rows), { status: 200 });
   } catch (error) {
     console.error('Error fetching categories:', error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch categories' }), { status: 500 });
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch categories' }),
+      { status: 500 }
+    );
   }
 }
 
@@ -17,7 +22,10 @@ export async function POST(request) {
 
     // Validate required fields
     if (!category || !category_slug || !status) {
-      return new Response(JSON.stringify({ error: 'All fields are required' }), { status: 400 });
+      return new Response(
+        JSON.stringify({ error: 'All fields are required' }),
+        { status: 400 }
+      );
     }
 
     // Get current date
@@ -32,11 +40,16 @@ export async function POST(request) {
 
     // Return success response
     return new Response(
-      JSON.stringify({ message: 'Category added successfully', category: result.rows[0] }), 
+      JSON.stringify({
+        message: 'Category added successfully',
+        category: result.rows[0],
+      }),
       { status: 201 }
     );
   } catch (error) {
     console.error('Error adding category:', error);
-    return new Response(JSON.stringify({ error: 'Failed to add category' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Failed to add category' }), {
+      status: 500,
+    });
   }
 }

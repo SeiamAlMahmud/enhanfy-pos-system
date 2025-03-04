@@ -31,16 +31,19 @@ export default function AccountPage() {
     try {
       console.log(userRole);
       // const response = await fetch('/Bank_Accounts/accounts', {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/post-accounts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          accountName,
-          openingBalance,
-          uniqueId,
-          userRole,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/post-accounts`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            accountName,
+            openingBalance,
+            uniqueId,
+            userRole,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.text();
@@ -59,21 +62,23 @@ export default function AccountPage() {
 
   async function fetchAccounts() {
     try {
-        // const response = await fetch('/Bank_Accounts/accounts');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch accounts');
-        }
-        const data = await response.json();
-        setAccounts(data);
-      } catch (error) {
-        console.error('Error fetching accounts:', error);
-      } finally {
-        setLoading(false);
+      // const response = await fetch('/Bank_Accounts/accounts');
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch accounts');
       }
+      const data = await response.json();
+      setAccounts(data);
+    } catch (error) {
+      console.error('Error fetching accounts:', error);
+    } finally {
+      setLoading(false);
     }
-    
-    useEffect(() => {
+  }
+
+  useEffect(() => {
     fetchAccounts();
   }, []);
   if (loading)
