@@ -208,7 +208,8 @@ export default function ProductCreate() {
   useEffect(() => {
     const fetchUnits = async () => {
       try {
-        const response = await fetch('/Units/units'); // Call the API route
+        // const response = await fetch('/Units/units'); // Call the API route
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/units/get-units`); // Call the API route
         if (!response.ok) throw new Error('Failed to fetch units');
         const data = await response.json();
         setUnits(data);

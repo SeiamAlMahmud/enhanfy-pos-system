@@ -156,7 +156,8 @@ export default function AddSale() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await fetch('/Customers/customer');
+        // const response = await fetch('/Customers/customer');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customers/get-customers`);
         if (!response.ok) throw new Error('Failed to fetch customers');
 
         const { customers } = await response.json();
@@ -229,6 +230,7 @@ export default function AddSale() {
     };
 
     try {
+       // const response = await fetch('/Sales/Create/sales');
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/post-sales`,
         {
