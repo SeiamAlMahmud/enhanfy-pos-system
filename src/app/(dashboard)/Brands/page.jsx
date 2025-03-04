@@ -563,7 +563,8 @@ export default function Brands() {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await fetch('/Brands/brands');
+        // const response = await fetch('/Brands/brands');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/brands/get-brands`);
         const data = await response.json();
         setProducts(data);
         setLoading(false);
@@ -685,7 +686,7 @@ export default function Brands() {
     XLSX.utils.book_append_sheet(wb, ws, 'Brands');
     XLSX.writeFile(wb, 'brands.xlsx');
   };
-  const filteredProducts = products
+  const filteredProducts = (products || [])
     .filter(
       (product) =>
         (filters.name === '' || product.name === filters.name) &&
