@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../context/UserContext';
 import Loader from '@/app/Loaders/page';
+import { toast } from 'react-toastify';
 
 export default function AccountPage() {
   const { user } = useUser();
@@ -29,7 +30,8 @@ export default function AccountPage() {
 
     try {
       console.log(userRole);
-      const response = await fetch('/Bank_Accounts/accounts', {
+      // const response = await fetch('/Bank_Accounts/accounts', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/post-accounts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -44,7 +46,7 @@ export default function AccountPage() {
         const errorMessage = await response.text();
         alert(errorMessage);
       } else {
-        alert('Account added successfully!');
+        toast.success('Account added successfully!');
         setAccountName('');
         setOpeningBalance(0);
         fetchAccounts();
@@ -57,7 +59,8 @@ export default function AccountPage() {
 
   async function fetchAccounts() {
     try {
-        const response = await fetch('/Bank_Accounts/accounts');
+        // const response = await fetch('/Bank_Accounts/accounts');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`);
         if (!response.ok) {
           throw new Error('Failed to fetch accounts');
         }

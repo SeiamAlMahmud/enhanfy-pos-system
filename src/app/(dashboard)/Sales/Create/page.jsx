@@ -173,7 +173,8 @@ export default function AddSale() {
   useEffect(() => {
     async function fetchAccounts() {
       try {
-        const response = await fetch('/Bank_Accounts/accounts');
+        // const response = await fetch('/Bank_Accounts/accounts');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`);
         if (!response.ok) {
           throw new Error('Failed to fetch accounts');
         }
