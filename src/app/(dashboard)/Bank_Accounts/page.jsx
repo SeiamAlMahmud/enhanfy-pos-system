@@ -28,6 +28,7 @@ export default function AccountPage() {
       Math.floor(Math.random() * 10_000_000_000_000_000) + 10_000;
 
     try {
+      console.log(userRole);
       const response = await fetch('/Bank_Accounts/accounts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

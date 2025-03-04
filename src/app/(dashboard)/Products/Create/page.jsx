@@ -132,10 +132,13 @@ export default function ProductCreate() {
     }
 
     try {
-      const response = await fetch('/Products/Create/products', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/post-products`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();

@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function AddSale() {
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState('');
-  const [selectedCustomerInfo, setSelectedCustomerInfo] = useState();
   const [saleDate, setSaleDate] = useState(new Date());
   const [payTerm, setPayTerm] = useState('');
   const [status, setStatus] = useState('');
@@ -156,7 +155,10 @@ export default function AddSale() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await fetch('/Customers/customer');
+        // const response = await fetch("/Customers/customer");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customers/get-customers`
+        );
         if (!response.ok) throw new Error('Failed to fetch customers');
 
         const { customers } = await response.json();
@@ -173,7 +175,10 @@ export default function AddSale() {
   useEffect(() => {
     async function fetchAccounts() {
       try {
-        const response = await fetch('/Bank_Accounts/accounts');
+        // const response = await fetch('/Bank_Accounts/accounts');
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/get-accounts`
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch accounts');
         }
@@ -198,13 +203,8 @@ export default function AddSale() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const filterCustomerInfo = customers.filter(
-      (customer) => customer.id == selectedCustomer
-    )[0];
-
     const formData = {
-      selectedCustomer: filterCustomerInfo.name,
-      selectedCustomerId: Number(filterCustomerInfo.id),
+      selectedCustomer,
       saleDate,
       payTerm,
       status,
@@ -273,14 +273,11 @@ export default function AddSale() {
               <select
                 className="w-full p-2 border rounded"
                 value={selectedCustomer}
-                onChange={(e) => {
-                  setSelectedCustomer(e.target.value);
-                  console.log(e.target.value, 'eeeeeeeeeeeeeeeeeeeeeeee');
-                }}
+                onChange={(e) => setSelectedCustomer(e.target.value)}
               >
                 <option value="Walk-In Customer">Walk-In Customer</option>
                 {customers?.map((customer) => (
-                  <option key={customer.id} value={customer.id}>
+                  <option key={customer.id} value={customer.name}>
                     {customer.name}
                   </option>
                 ))}
@@ -290,7 +287,7 @@ export default function AddSale() {
               <label className="block font-semibold">Billing Address:</label>
               <input
                 type="text"
-                value={'Type your billing address'}
+                value={selectedCustomer || 'Walk-In Customer'}
                 className="w-full p-2 border rounded bg-gray-100"
               />
             </div>
@@ -298,7 +295,7 @@ export default function AddSale() {
               <label className="block font-semibold">Shipping Address:</label>
               <input
                 type="text"
-                value={'Type your shipping address'}
+                value={selectedCustomer || 'Walk-In Customer'}
                 className="w-full p-2 border rounded bg-gray-100"
               />
             </div>

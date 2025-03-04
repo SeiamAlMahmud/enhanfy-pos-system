@@ -50,7 +50,6 @@ export default function Sales() {
   useEffect(() => {
     const fetchSales = async () => {
       try {
-        // const response = await fetch('/Sales/Create/sales');
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/get-sales`
         );
@@ -411,6 +410,7 @@ export default function Sales() {
 
   const updateSaleStatus = async (saleId, newStatus) => {
     try {
+      // const response = await fetch('/Sales/Create/sales',
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales/put-sales`,
         {
@@ -472,7 +472,6 @@ export default function Sales() {
     }
   };
 
-  console.log(sales);
   return (
     <div className="bg-white dark:bg-[#141432] text-gray-500 dark:text-white font-nunito text-sm">
       <div className="p-2 md:mt-[5%] mt-[20%]">
@@ -482,18 +481,14 @@ export default function Sales() {
             <h3 className=" ">Sold Today</h3>
             <p className=" dark:text-white ">
               Tk{' '}
-              {sales &&
-                sales
-                  ?.filter(
-                    (sale) =>
-                      new Date(sale.sale_date).toLocaleDateString() ===
-                      new Date().toLocaleDateString()
-                  )
-                  .reduce(
-                    (sum, sale) => sum + Number(sale.total_payable || 0),
-                    0
-                  )
-                  .toFixed(2)}
+              {sales
+                ?.filter(
+                  (sale) =>
+                    new Date(sale.sale_date).toLocaleDateString() ===
+                    new Date().toLocaleDateString()
+                )
+                .reduce((sum, sale) => sum + Number(sale.total_payable || 0), 0)
+                .toFixed(2)}
             </p>
           </div>
 
@@ -501,15 +496,14 @@ export default function Sales() {
             <h3 className=" ">Today Received</h3>
             <p className=" dark:text-white ">
               Tk{' '}
-              {sales &&
-                sales
-                  ?.filter(
-                    (sale) =>
-                      new Date(sale.sale_date).toLocaleDateString() ===
-                      new Date().toLocaleDateString()
-                  )
-                  .reduce((sum, sale) => sum + Number(sale.amount_paid || 0), 0)
-                  .toFixed(2)}
+              {sales
+                ?.filter(
+                  (sale) =>
+                    new Date(sale.sale_date).toLocaleDateString() ===
+                    new Date().toLocaleDateString()
+                )
+                .reduce((sum, sale) => sum + Number(sale.amount_paid || 0), 0)
+                .toFixed(2)}
             </p>
           </div>
 
@@ -517,27 +511,23 @@ export default function Sales() {
             <h3 className=" ">Today Profit</h3>
             <p className=" dark:text-white ">
               Tk{' '}
-              {sales &&
-                sales
-                  ?.filter(
-                    (sale) =>
-                      new Date(sale.sale_date).toLocaleDateString() ===
-                      new Date().toLocaleDateString()
-                  )
-                  .reduce((sum, sale) => {
-                    const totalProfit =
-                      Number(sale.total || 0) -
-                      ((sales &&
-                        sale.products.length !== 0 &&
-                        JSON.parse(sale.products).reduce(
-                          (productSum, product) =>
-                            productSum + Number(product.purchase_cost || 0),
-                          0
-                        )) ||
-                        0);
-                    return sum + totalProfit;
-                  }, 0)
-                  .toFixed(2)}
+              {sales
+                ?.filter(
+                  (sale) =>
+                    new Date(sale.sale_date).toLocaleDateString() ===
+                    new Date().toLocaleDateString()
+                )
+                .reduce((sum, sale) => {
+                  const totalProfit =
+                    Number(sale.total || 0) -
+                    (sale.products?.reduce(
+                      (productSum, product) =>
+                        productSum + Number(product.purchase_cost || 0),
+                      0
+                    ) || 0);
+                  return sum + totalProfit;
+                }, 0)
+                .toFixed(2)}
             </p>
           </div>
 
@@ -723,7 +713,7 @@ export default function Sales() {
                           </li>
                           {/* <li className="p-2 cursor-pointer">
                           <Printer /> Challan Print
-                      </li>  */}
+                      </li> */}
                           <li
                             onClick={() => handleEditClick(sale)}
                             className="p-2 hover:bg-base-200 cursor-pointer"
