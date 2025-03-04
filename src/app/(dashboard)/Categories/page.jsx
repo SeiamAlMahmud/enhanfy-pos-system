@@ -56,16 +56,17 @@ export default function CategoryList() {
     };
     console.log(categoryData);
     try {
-      const response = await fetch(`/Categories/categories`, {
+      // const response = await fetch(`/Categories/categories`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/post-categories`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(categoryData),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Failed to add category');
-
       toast.success('Category added successfully!');
-      closeAddCategoryModal();
+      fetchCategories();
+      closeAddCategoryModal(); 
     } catch (error) {
       console.error('Error adding category:', error);
       toast.error('Failed to add category');
@@ -176,19 +177,20 @@ export default function CategoryList() {
 
 
    // Fetch categories from API on component mount
+   async function fetchCategories() {
+     try {
+       // const response = await fetch('/Categories/categories'); // Update this path if necessary
+       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/get-categories`); // Update this path if necessary
+       const data = await response.json();
+       setProducts(data);
+       // <Brands categories={categories}/>
+     } catch (error) {
+       console.error('Failed to fetch categories:', error);
+     } finally {
+       setLoading(false);
+     }
+   }
    useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const response = await fetch('/Categories/categories'); // Update this path if necessary
-        const data = await response.json();
-        setProducts(data);
-        // <Brands categories={categories}/>
-      } catch (error) {
-        console.error('Failed to fetch categories:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
 
     fetchCategories();
   }, []);
