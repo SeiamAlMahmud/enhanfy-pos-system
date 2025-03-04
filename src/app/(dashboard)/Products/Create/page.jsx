@@ -53,7 +53,8 @@ export default function ProductCreate() {
 
     // console.log(newCategorys);
     try {
-      const response = await fetch(`/Categories/categories`, {
+      // const response = await fetch(`/Categories/categories`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/post-categories`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newCategorys),
@@ -155,17 +156,18 @@ export default function ProductCreate() {
     }
   };
 
-  useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const response = await fetch('/Categories/categories');
-        const data = await response.json();
-        setCategories(data);
-      } catch (error) {
-        console.error('Failed to fetch categories:', error);
-      } finally {
-      }
+  async function fetchCategories() {
+    try {
+      // const response = await fetch('/Categories/categories');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/get-categories`);
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    } finally {
     }
+  }
+  useEffect(() => {
 
     fetchCategories();
   }, []);
