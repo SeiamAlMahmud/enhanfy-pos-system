@@ -138,7 +138,9 @@ export default function AddSale() {
     const fetchProducts = async () => {
       try {
         // const response = await fetch('/Products/Create/products');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/get-products`
+        );
         if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
         setAvailableProducts(data);
