@@ -290,7 +290,8 @@ export default function AddSale() {
               <label className="block font-semibold">Billing Address:</label>
               <input
                 type="text"
-                value={'Type your billing address'}
+                // value={'Type your billing address'}
+                placeholder='Type your billing address'
                 className="w-full p-2 border rounded bg-gray-100"
               />
             </div>
@@ -298,7 +299,8 @@ export default function AddSale() {
               <label className="block font-semibold">Shipping Address:</label>
               <input
                 type="text"
-                value={'Type your shipping address'}
+                // value={'Type your shipping address'}
+                placeholder='Type your billing address'
                 className="w-full p-2 border rounded bg-gray-100"
               />
             </div>

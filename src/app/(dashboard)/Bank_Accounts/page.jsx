@@ -47,6 +47,7 @@ export default function AccountPage() {
         alert('Account added successfully!');
         setAccountName('');
         setOpeningBalance(0);
+        fetchAccounts();
       }
     } catch (error) {
       console.error('Error creating account:', error);
@@ -54,9 +55,8 @@ export default function AccountPage() {
     }
   };
 
-  useEffect(() => {
-    async function fetchAccounts() {
-      try {
+  async function fetchAccounts() {
+    try {
         const response = await fetch('/Bank_Accounts/accounts');
         if (!response.ok) {
           throw new Error('Failed to fetch accounts');
@@ -69,7 +69,8 @@ export default function AccountPage() {
         setLoading(false);
       }
     }
-
+    
+    useEffect(() => {
     fetchAccounts();
   }, []);
   if (loading)
